@@ -47,7 +47,13 @@ sudo apt install fakeroot
 
 ## Configuring the Linux Kernel
 
-- OS: Ubuntu 20.04 LTS
+- OS: Ubuntu 20.04 LTS or newer
+
+```sh
+sudo apt-get update
+sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils \
+    libssl-dev bc flex libelf-dev bison qemu-system-x86
+```
 
 ### Download 
 

@@ -31,7 +31,7 @@ This will open a window with many Linux kernel configuration settings. You can e
 
 Tips: use left, right, up and down arrow key to navigate 
 
-<img src="images/1.png" alt="menuconfig"/>
+<img src="images/01.png" alt="menuconfig"/>
 <br/>
 <br/>
 Now set following options-
@@ -39,32 +39,32 @@ Now set following options-
 ## Option 1: Enable 64 bit support 
 Enable 64 support 
 
-<img src="images/2.png" alt="64bit kernel"/>
+<img src="images/02.png" alt="64bit kernel"/>
 
 ## Option 2: Hostname
 `General setup >> Default hostname`
 Set a Host name `Embedded_linux`
 
-<img src="images/3.png" alt="set hostname"/>
+<img src="images/03.png" alt="set hostname"/>
 
 ## Option 3: Enable support for RAM disk
 
 General Setup >> Initial RAM filesystem and RAM disk (initramfs/initrd) support
 
-<img src="images/4.png" alt="ram disk"/>
+<img src="images/04.png" alt="ram disk"/>
 
 ## Option 4: Configure standard kernel features
 
 General Setup > Configure standard kernel features (expert users)
 
-<img src="images/5.png" alt="configure standard kernel"/>
+<img src="images/05.png" alt="configure standard kernel"/>
  
 
 ## Option 5: Ensure Gzip Kernel compression
 
 General Setup >kernel compression mode (Gzip)
 
-<img src="images/6.png" alt="gzip"/>
+<img src="images/06.png" alt="gzip"/>
 
 
 ## Option 6: ELF binary and script
@@ -72,7 +72,7 @@ General Setup >kernel compression mode (Gzip)
 Executable file formats > Kernel support for ELF binaries
 Executable file formats > Kernel support for scripts starting with #!
 
-<img src="images/7.png" alt="elf"/>
+<img src="images/07.png" alt="elf"/>
 
 ## Option 7: Enable devtmpfs
 
@@ -80,13 +80,13 @@ Device Driver > Generic Driver Options > Maintain a devtmpfs filesystem to mount
 
 Device Driver > Generic Driver Options > Automount devtmpfs at /dev, after the kernel mounted the rootfs
 
-<img src="images/8.png" alt="devtmfs"/> 
+<img src="images/08.png" alt="devtmfs"/> 
 
 ## Option 8: Enable TTY
 
 Device Driver > Character devices > Enable TTY
 
-<img src="images/9.png" alt="tty"/> 
+<img src="images/09.png" alt="tty"/> 
 
 ## Option 9: Enable Serial Drivers
 
@@ -120,11 +120,6 @@ To see how many CPU Core or How mane processor you have type:
 ```
 $ nproc
 ```
-<video controls autoplay loop muted width="400" height="600">
-  <source src="videos/kernel.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
 Your Linux kernel is now ready and can be found in the `linux-6.5.7/arch/x86/boot` directory.
 
 ```sh
@@ -286,7 +281,9 @@ $ qemu-system-x86_64 \
 ```
 
 # You Successfully build a custom linux kernel & RootFS 
-<img src="images/giphy.gif" alt="gif" />
+
+<span style="color: orange; font-weight: bold;"> Congratulations!! </span> 
+
 <br/>
 <br/>
 

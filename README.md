@@ -1,16 +1,16 @@
 
 # Bare Minimal Linux Kernel & RootFS
 
+- OS: Ubuntu 20.04 LTS
 
-OS: Ubuntu 20.04 LTS
+- Linux Kernel: Version-6.5.7
 
-Linux Kernel: Version-6.5.7
-
-BusyBox: Version-1.36.1
+- BusyBox: Version-1.36.1
 
 # Creating Linux Kernel
 
 ### Download 
+
 ```sh 
 $ wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.5.7.tar.xz
 $ tar -xvf linux-6.5.7.tar.xz
@@ -18,15 +18,19 @@ $ cd linux-6.5.7
 ```
 
 ### Configure tiniest possible kernel 
+
 ```bash  
 $ make allnoconfig
 ```
+
 This will create .config file setting values to 'n' as much as possible.
 
 ### Customization
+
 ```bash
 $ make menuconfig 
 ```
+
 This will open a window with many Linux kernel configuration settings. You can enable or disable those settings and customize the Linux kernel as needed.
 
 Tips: use left, right, up and down arrow key to navigate 
@@ -34,72 +38,78 @@ Tips: use left, right, up and down arrow key to navigate
 <img src="images/01.png" alt="menuconfig"/>
 <br/>
 <br/>
-Now set following options-
+
+- Now set following options-
 
 ## Option 1: Enable 64 bit support 
-Enable 64 support 
+
+- Enable 64 support 
 
 <img src="images/02.png" alt="64bit kernel"/>
 
 ## Option 2: Hostname
-`General setup >> Default hostname`
-Set a Host name `Embedded_linux`
+
+- General setup >> Default hostname
+
+- Set a Host name `Embedded_linux`
 
 <img src="images/03.png" alt="set hostname"/>
 
 ## Option 3: Enable support for RAM disk
 
-General Setup >> Initial RAM filesystem and RAM disk (initramfs/initrd) support
+- General Setup >> Initial RAM filesystem and RAM disk (initramfs/initrd) support
 
 <img src="images/04.png" alt="ram disk"/>
 
 ## Option 4: Configure standard kernel features
 
-General Setup > Configure standard kernel features (expert users)
+- General Setup > Configure standard kernel features (expert users)
 
 <img src="images/05.png" alt="configure standard kernel"/>
  
 
 ## Option 5: Ensure Gzip Kernel compression
 
-General Setup >kernel compression mode (Gzip)
+- General Setup >kernel compression mode (Gzip)
 
 <img src="images/06.png" alt="gzip"/>
 
 
 ## Option 6: ELF binary and script
 
-Executable file formats > Kernel support for ELF binaries
-Executable file formats > Kernel support for scripts starting with #!
+- Executable file formats > Kernel support for ELF binaries
+
+- Executable file formats > Kernel support for scripts starting with #!
 
 <img src="images/07.png" alt="elf"/>
 
 ## Option 7: Enable devtmpfs
 
-Device Driver > Generic Driver Options > Maintain a devtmpfs filesystem to mount at /dev
+- Device Driver > Generic Driver Options > Maintain a devtmpfs filesystem to mount at /dev
 
-Device Driver > Generic Driver Options > Automount devtmpfs at /dev, after the kernel mounted the rootfs
+- Device Driver > Generic Driver Options > Automount devtmpfs at /dev, after the kernel mounted the rootfs
 
 <img src="images/08.png" alt="devtmfs"/> 
 
 ## Option 8: Enable TTY
 
-Device Driver > Character devices > Enable TTY
+- Device Driver > Character devices > Enable TTY
 
 <img src="images/09.png" alt="tty"/> 
 
 ## Option 9: Enable Serial Drivers
 
-Device Driver > Character devices > Serial Drivers  > 8250/16550 and compatible serial support
+- Device Driver > Character devices > Serial Drivers  > 8250/16550 and compatible serial support
 
-Device Driver > Character devices > Serial Drivers  > Console on 8250/16550 and compatible serial port
+- Device Driver > Character devices > Serial Drivers  > Console on 8250/16550 and compatible serial port
 
 <img src="images/10.png" alt="serial"/> 
 
 ## Option 10: Pseudo filesystems
 
-File systems > Pseudo filesystems > /proc file system support
-File systems > Pseudo filesystems > /sysfs file system support
+- File systems > Pseudo filesystems > /proc file system support
+
+- File systems > Pseudo filesystems > /sysfs file system support
 
 <img src="images/11.png" alt="filesystem"/> 
 <br/>
@@ -113,22 +123,27 @@ Here is the build command to build Linux kernel.
 
 ```bash
 $ make -j4
-``` 
+```
+
 Here `make -j <number of cpu>`, it will take 1.28min for me.
 
-To see how many CPU Core or How mane processor you have type:
+To see how many CPU Core or How mane processor you have type
+
 ```
 $ nproc
 ```
+
 Your Linux kernel is now ready and can be found in the `linux-6.5.7/arch/x86/boot` directory.
 
 ```sh
 $ cd linux-6.5.7/arch/x86/boot
 $ ls -sh bzImage
 ```
+
 Linux Kernel Size: 1.7MB
 
 Create a working Directory and put the linux kernel image 
+
 ```sh
 $ mkdir -p ~/workspace_kernel/linux-kernel
 $ cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
@@ -137,23 +152,31 @@ $ cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
 # Creating Initramfs 
 
 Downloading latest Busybox
+
 ```bash
 $ wget https://busybox.net/downloads/busybox-1.36.0.tar.bz2
 ```
-cd to workspace directory
+
+change working path to workspace directory
+
 ```sh 
 $ cd ~/workspace_kernel
 ```
 
 extracting the Busybox source tree
+
 ```sh
 $ tar -xvf busybox-1.36.0.tar.bz2
 ```
-Cd to busybox
+
+change working path to busybox
+
 ```sh
 $ cd busybox-1.33.1
 ```
-Customize busybox 
+
+Customize busybox
+
 ```
 $ make menuconfig
 ```
@@ -171,24 +194,30 @@ Now, exit and save.
 It is time to build busybox.
 
 Build
+
 ```sh 
 $ make -j4
 $ make -j <number of CPU core>
 ```
-To see how many CPU Core or How mane processor you have type:
+
+To see how many CPU Core or How mane processor you have type
+
 ```
 $ nproc
 ```
 
 More general command
+
 ```
 $ make -j ${nproc}
 ```
 
 Install  
+
 ```sh
 $ make install
 ```
+
 This will install binaries in “./_install” directory
 
 ```sh
@@ -198,28 +227,33 @@ $ make CONFIG_PREFIX=$PWD/woris install
 
 ## Create The RAM DISK Image
 
-Cd to workspace directory
+change working path to workspace directory
+
 ```sh 
 $  cd ~/workspace_kernel
 ```
+
 creating embedded_linux directory and cd to embedded_linux
 
 ```sh
 $ mkdir embedded_linux && cd embedded_linux
 ```
+
 Now Craete `etc`, `proc`, `sys` and `dev` directory.
+
 ```sh 
 $  mkdir -p etc proc sys dev
 ```
 
 Coping all busybox installed files to `~/workspace_linux/embedded_linux`
+
 ```sh
 $  cp -a <busybox install dir>/_install/* .
 ```
 
 
-Create init script in “embedded_linux” directory.
-This is the content of init script.
+Create init script in “embedded_linux” directory. This is the content of init script.
+
 ```sh
 $ cd ~/workspace_kernel/embedded_linux
 $ vim init
@@ -236,16 +270,19 @@ exec /bin/sh
 ```
 
 It is time to make init file executable. Give executable permission to init file
+
 ```sh
 $  chmod +x init
 ```
 
 Creating initramfs as cpio archieve
+
 ```sh
 $ find . -print0 | cpio --null -ov --format=newc | gzip -9 > initramfs.cpio.gz
 ```
 
-Now the Directory structure look like 
+Now the Directory structure look like
+
 ```
 .
 ├── bin
@@ -265,6 +302,7 @@ Now the Directory structure look like
 # Booting Linux in QEMU
 
 it is time to start QEMU and booting our mini Linux.
+
 ```
 $ qemu-system-x86_64 \
 -kernel <linux kernel dir>/arch/x86_64/boot/bzImage \
@@ -280,12 +318,9 @@ $ qemu-system-x86_64 \
 -append "init=/bin/sh console=ttyS0" -nographic
 ```
 
-# You Successfully build a custom linux kernel & RootFS 
+## Congratulations!! 
 
-<span style="color: orange; font-weight: bold;"> Congratulations!! </span> 
-
-<br/>
-<br/>
+You Successfully build a custom linux kernel & RootFS.
 
 Here some Command you may try
 
@@ -301,7 +336,9 @@ $ find
 
 # typelinux commands
 ```
+
 To kill qemu open a new terminal and type
+
 ```sh 
 $ killall qemu-system-x86_64
 ```
@@ -312,12 +349,12 @@ $ killall qemu-system-x86_64
 <img src="images/p2.png" alt="p1" />
 <img src="images/p3.png" alt="p1" />
 
-
 ## Reference:
-- [Mastering Embedded Linux Programming - Second Edition.pdf](http://centaur.sch.bme.hu/~holcsik_t/upload/Mastering%20Embedded%20Linux%20Programming%20-%20Second%20Edition.pdf)
+
+- [Mastering Embedded Linux Programming - Second Edition.pdf](https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition)
 
 - [Tutorial: Building the Simplest Possible Linux System - Rob Landley, se-instruments.com](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
 
 - [landlay.net](https://landley.net/aboriginal/about.html)
 
-- [https://www.kernel.org/](https://www.kernel.org/)
+- [kernel.org](https://www.kernel.org/)

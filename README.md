@@ -410,8 +410,13 @@ killall qemu-system-x86_64
 
 - [Compiling a kernel for QEMU with graphics support](https://github.com/byte4RR4Y/aarch64-kernel-for-qemu) or in [aarch64-kernel-for-qemu.md](aarch64-kernel-for-qemu.md)
 
-- [Tutorial: Building the Simplest Possible Linux System - Rob Landley, se-instruments.com](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
+- [Setup: Ubuntu host, QEMU vm, x86-64 kernel](https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md) and [create-image.sh](https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh)
+
+- [Tutorial: Building the Simplest Possible Linux System](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
 
 - [landlay.net](https://landley.net/aboriginal/about.html)
 
 - [kernel.org](https://www.kernel.org/)
+
+- [Linux kernel QEMU setup](https://vccolombo.github.io/cybersecurity/linux-kernel-qemu-setup/)
+

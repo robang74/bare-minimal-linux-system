@@ -1,0 +1,11 @@
+#!/bin/sh
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+cat <<EOF
+boot took $(cut -d' ' -f1 /proc/uptime) seconds
+Welcome to EmbeddedCraft Mini Linux for Learners !!!
+EOF
+mkdir -p /etc/init.d
+touch /etc/init.d/rcS
+exec /linuxrc

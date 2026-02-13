@@ -3,7 +3,7 @@
 
 append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
-rfsimg="${1:-initramfs.cpio}"; test -r ${rfimg}.gz && rfsimg="${rfsimg}.gz"
+rfsimg="${1:-initramfs.cpio}"; test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
 cmd="qemu-system-x86_64 -kernel bzImage -initrd ${rfsimg} -nographic -no-reboot\
     -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx\
     -append 'root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0'"\

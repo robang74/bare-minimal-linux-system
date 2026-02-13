@@ -58,32 +58,36 @@ sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils \
 ### Download 
 
 ```sh 
-$ wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.5.7.tar.xz
-$ tar -xvf linux-6.5.7.tar.xz
-$ cd linux-6.5.7
+wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.5.7.tar.xz
+tar -xvf linux-6.5.7.tar.xz
+cd linux-6.5.7
 ```
 
 ### Configure tiniest possible kernel 
 
-```bash  
-$ make allnoconfig
+```sh  
+make allnoconfig
 ```
 
 This will create .config file setting values to 'n' as much as possible.
 
 ### Customization
 
-```bash
-$ make menuconfig 
+```sh
+make menuconfig 
+```
+
+or alternatively from Linux-5.10.54 and newer
+
+```sh
+make defconfig # creates a .config file
+make kvmconfig # modifies .config to set up everything necessary for it to run on QEMU
+# or make kvm_guest.config in more recent kernels
 ```
 
 This will open a window with many Linux kernel configuration settings. You can enable or disable those settings and customize the Linux kernel as needed.
 
 Tips: use left, right, up and down arrow key to navigate 
-
-<img src="images/01.png" alt="menuconfig"/>
-<br/>
-<br/>
 
 - Now set following options-
 
@@ -156,8 +160,6 @@ Tips: use left, right, up and down arrow key to navigate
 - File systems > Pseudo filesystems > /sysfs file system support
 
 <img src="images/11.png" alt="filesystem"/> 
-<br/>
-<br/>
 
 Now, save and close the configuration window.
 
@@ -167,23 +169,23 @@ Now, save and close the configuration window.
 
 Here is the build command to build Linux kernel.
 
-```bash
-$ make -j4
+```sh
+make -j4
 ```
 
 Here `make -j <number of cpu>`, it will take 1.28min for me.
 
 To see how many CPU Core or How mane processor you have type
 
-```
-$ nproc
+```sh
+nproc
 ```
 
 Your Linux kernel is now ready and can be found in the `linux-6.5.7/arch/x86/boot` directory.
 
 ```sh
-$ cd linux-6.5.7/arch/x86/boot
-$ ls -sh bzImage
+cd linux-6.5.7/arch/x86/boot
+ls -sh bzImage
 ```
 
 Linux Kernel Size: 1.7MB
@@ -191,40 +193,40 @@ Linux Kernel Size: 1.7MB
 Create a working Directory and put the linux kernel image 
 
 ```sh
-$ mkdir -p ~/workspace_kernel/linux-kernel
-$ cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
+mkdir -p ~/workspace_kernel/linux-kernel
+cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
 ```
 
 ### Creating Initramfs 
 
 Downloading latest Busybox
 
-```bash
-$ wget https://busybox.net/downloads/busybox-1.36.0.tar.bz2
+```sh
+wget https://busybox.net/downloads/busybox-1.36.0.tar.bz2
 ```
 
 change working path to workspace directory
 
 ```sh 
-$ cd ~/workspace_kernel
+cd ~/workspace_kernel
 ```
 
 extracting the Busybox source tree
 
 ```sh
-$ tar -xvf busybox-1.36.0.tar.bz2
+tar -xvf busybox-1.36.0.tar.bz2
 ```
 
 change working path to busybox
 
 ```sh
-$ cd busybox-1.33.1
+cd busybox-1.33.1
 ```
 
 Customize busybox
 
-```
-$ make menuconfig
+```sh
+make menuconfig
 ```
 
 This will start configuration menu for BusyBox. We need only one setting. 
@@ -242,33 +244,33 @@ It is time to build busybox.
 Build
 
 ```sh 
-$ make -j4
-$ make -j <number of CPU core>
+make -j4
+make -j <number of CPU core>
 ```
 
 To see how many CPU Core or How mane processor you have type
 
-```
-$ nproc
+```sh
+nproc
 ```
 
 More general command
 
-```
-$ make -j ${nproc}
+```sh
+make -j ${nproc}
 ```
 
 Install  
 
 ```sh
-$ make install
+make install
 ```
 
 This will install binaries in “./_install” directory
 
 ```sh
-# another command to install busybox in user specific directory
-$ make CONFIG_PREFIX=$PWD/woris install
+another command to install busybox in user specific directory
+make CONFIG_PREFIX=$PWD/woris install
 ```
 
 ---
@@ -278,55 +280,56 @@ $ make CONFIG_PREFIX=$PWD/woris install
 change working path to workspace directory
 
 ```sh 
-$  cd ~/workspace_kernel
+cd ~/workspace_kernel
 ```
 
 creating embedded_linux directory and cd to embedded_linux
 
 ```sh
-$ mkdir embedded_linux && cd embedded_linux
+mkdir embedded_linux && cd embedded_linux
 ```
 
 Now Craete `etc`, `proc`, `sys` and `dev` directory.
 
 ```sh 
-$  mkdir -p etc proc sys dev
+mkdir -p etc proc sys dev
 ```
 
 Coping all busybox installed files to `~/workspace_linux/embedded_linux`
 
 ```sh
-$  cp -a <busybox install dir>/_install/* .
+cp -a <busybox install dir>/_install/* .
 ```
 
 
 Create init script in “embedded_linux” directory. This is the content of init script.
 
 ```sh
-$ cd ~/workspace_kernel/embedded_linux
-$ vim init
+cd ~/workspace_kernel/embedded_linux
+vim init
 ```
+
 ``` sh
 #!/bin/sh
 mount -t proc none /proc
 mount -t sysfs none /sys
-cat <<!
+cat <<EOF
 boot took $(cut -d' ' -f1 /proc/uptime) seconds
 Welcome to EmbeddedCraft Mini Linux for Learners !!!
-!
+EOF
 exec /bin/sh
 ```
 
 It is time to make init file executable. Give executable permission to init file
 
 ```sh
-$  chmod +x init
+chmod +x init
 ```
 
 Creating initramfs as cpio archieve
 
 ```sh
-$ find . -print0 | cpio --null -ov --format=newc | gzip -9 > initramfs.cpio.gz
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > initramfs.cpio.gz
 ```
 
 Now the Directory structure look like
@@ -351,7 +354,7 @@ Now the Directory structure look like
 
 it is time to start QEMU and booting our mini Linux.
 
-```
+```sh
 sh start.sh
 ```
 
@@ -371,14 +374,14 @@ You Successfully build a custom linux kernel & RootFS.
 Here some Command you may try
 
 ```sh
-$ uname -a
-$ cat /proc/cpuinfo
-$ top
-$ ls
-$ cd
-$ mkdir
-$ grep
-$ find
+uname -a
+cat /proc/cpuinfo
+top
+ls
+cd
+mkdir
+grep
+find
 
 # typelinux commands
 ```
@@ -386,7 +389,7 @@ $ find
 To kill qemu open a new terminal and type
 
 ```sh 
-$ killall qemu-system-x86_64
+killall qemu-system-x86_64
 ```
 
 ---

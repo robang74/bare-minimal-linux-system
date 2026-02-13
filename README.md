@@ -1,14 +1,22 @@
 # Bare Minimal Linux Kernel & RootFS
 
-- OS: Ubuntu 20.04 LTS
+> [!NOTE]
+> 
+> Compared to the original project from which this repo has been forked the changes
+> in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
+> has been added to facilitate the use for those clone or download the zip file.
 
 - Linux Kernel: Version-6.5.7
 
 - BusyBox: Version-1.36.1
 
+---
+
 ## Quick start
 
-- download `bzimage`, `intiramfs.cpio` and the `start.sh` script
+- download [`bzImage`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/bzImage), [`initramfs.cpio`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/initramfs.cpio) and the [`start.sh`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/start.sh) script
+
+  - or downlod and extract the [zip archive](https://github.com/robang74/bare-minimal-linux-system/archive/refs/heads/main.zip) of the wholre repository.
 
 - launch with the script `sh start.sh` the QEMU virtual machine
 
@@ -38,6 +46,8 @@ sudo apt install fakeroot
 ---
 
 ## Configuring the Linux Kernel
+
+- OS: Ubuntu 20.04 LTS
 
 ### Download 
 

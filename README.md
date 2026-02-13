@@ -1,4 +1,3 @@
-
 # Bare Minimal Linux Kernel & RootFS
 
 - OS: Ubuntu 20.04 LTS
@@ -7,7 +6,38 @@
 
 - BusyBox: Version-1.36.1
 
-# Creating Linux Kernel
+## Quick start
+
+- download `bzimage`, `intiramfs.cpio` and the `start.sh` script
+
+- launch with the script `sh start.sh` the QEMU virtual machine
+
+### QEMU install for Ubuntu
+
+```sh
+sudo apt update
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+
+sudo adduser $USER libvirt
+sudo adduser $USER kvm
+```
+
+A quick test to check installation
+
+```sh
+kvm-ok
+qemu-system-x86_64 --version
+```
+
+This is an optional but useful for those who wants customise the system quickly
+
+```sh
+sudo apt install fakeroot
+```
+
+---
+
+## Configuring the Linux Kernel
 
 ### Download 
 
@@ -41,13 +71,13 @@ Tips: use left, right, up and down arrow key to navigate
 
 - Now set following options-
 
-## Option 1: Enable 64 bit support 
+#### Option 1: Enable 64 bit support 
 
 - Enable 64 support 
 
 <img src="images/02.png" alt="64bit kernel"/>
 
-## Option 2: Hostname
+#### Option 2: Hostname
 
 - General setup >> Default hostname
 
@@ -55,27 +85,25 @@ Tips: use left, right, up and down arrow key to navigate
 
 <img src="images/03.png" alt="set hostname"/>
 
-## Option 3: Enable support for RAM disk
+#### Option 3: Enable support for RAM disk
 
 - General Setup >> Initial RAM filesystem and RAM disk (initramfs/initrd) support
 
 <img src="images/04.png" alt="ram disk"/>
 
-## Option 4: Configure standard kernel features
+#### Option 4: Configure standard kernel features
 
 - General Setup > Configure standard kernel features (expert users)
 
 <img src="images/05.png" alt="configure standard kernel"/>
- 
 
-## Option 5: Ensure Gzip Kernel compression
+#### Option 5: Ensure Gzip Kernel compression
 
 - General Setup >kernel compression mode (Gzip)
 
 <img src="images/06.png" alt="gzip"/>
 
-
-## Option 6: ELF binary and script
+#### Option 6: ELF binary and script
 
 - Executable file formats > Kernel support for ELF binaries
 
@@ -83,7 +111,7 @@ Tips: use left, right, up and down arrow key to navigate
 
 <img src="images/07.png" alt="elf"/>
 
-## Option 7: Enable devtmpfs
+#### Option 7: Enable devtmpfs
 
 - Device Driver > Generic Driver Options > Maintain a devtmpfs filesystem to mount at /dev
 
@@ -91,13 +119,13 @@ Tips: use left, right, up and down arrow key to navigate
 
 <img src="images/08.png" alt="devtmfs"/> 
 
-## Option 8: Enable TTY
+#### Option 8: Enable TTY
 
 - Device Driver > Character devices > Enable TTY
 
 <img src="images/09.png" alt="tty"/> 
 
-## Option 9: Enable Serial Drivers
+#### Option 9: Enable Serial Drivers
 
 - Device Driver > Character devices > Serial Drivers  > 8250/16550 and compatible serial support
 
@@ -105,7 +133,7 @@ Tips: use left, right, up and down arrow key to navigate
 
 <img src="images/10.png" alt="serial"/> 
 
-## Option 10: Pseudo filesystems
+#### Option 10: Pseudo filesystems
 
 - File systems > Pseudo filesystems > /proc file system support
 
@@ -117,7 +145,9 @@ Tips: use left, right, up and down arrow key to navigate
 
 Now, save and close the configuration window.
 
-## Building Linux Kernel
+---
+
+## Building the Linux Kernel
 
 Here is the build command to build Linux kernel.
 
@@ -149,7 +179,7 @@ $ mkdir -p ~/workspace_kernel/linux-kernel
 $ cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
 ```
 
-# Creating Initramfs 
+### Creating Initramfs 
 
 Downloading latest Busybox
 
@@ -224,6 +254,8 @@ This will install binaries in “./_install” directory
 # another command to install busybox in user specific directory
 $ make CONFIG_PREFIX=$PWD/woris install
 ```
+
+---
 
 ## Create The RAM DISK Image
 
@@ -304,19 +336,17 @@ Now the Directory structure look like
 it is time to start QEMU and booting our mini Linux.
 
 ```
-$ qemu-system-x86_64 \
--kernel <linux kernel dir>/arch/x86_64/boot/bzImage \
--initrd <busybox dir>/embedded_linux/initramfs.cpio.gz \
--append "init=/bin/sh console=ttyS0"  -nographic -no-reboot
+sh start.sh
 ```
 
-if you download the zip archive so the command look like
+or by command line with the following string
 
 ```sh
-$ qemu-system-x86_64 \
--kernel linux_kernel/bzImage -initrd embedded_linux/initramfs.cpio.gz \
--append "init=/bin/sh console=ttyS0" -nographic
+qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio -nographic \
+    -no-reboot -append 'root=/dev/ram0 rdinit=/init console=ttyS0 panic=1'
 ```
+
+---
 
 ## Congratulations!! 
 
@@ -343,13 +373,19 @@ To kill qemu open a new terminal and type
 $ killall qemu-system-x86_64
 ```
 
-## Project Screen Shots:
+---
+
+## Project Screen Shotss
 
 <img src="images/p1.png" alt="p1" />
+
 <img src="images/p2.png" alt="p1" />
+
 <img src="images/p3.png" alt="p1" />
 
-## Reference:
+---
+
+## References
 
 - [Mastering Embedded Linux Programming - Second Edition.pdf](https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition)
 

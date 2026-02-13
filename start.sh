@@ -3,5 +3,5 @@
 
 cmd="qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio -nographic \
     -no-reboot -append 'root=/dev/ram0 rdinit=/init console=ttyS0 panic=1'"
-sh -c "$cmd"
+sh -c "$cmd $@"
 stty sane

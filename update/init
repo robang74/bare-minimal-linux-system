@@ -5,6 +5,7 @@ mount -t sysfs none /sys
 mount -t devtmpfs none /dev
 
 bttm=$(cut -d' ' -f1 /proc/uptime)
+( find / >/dev/null 2>&1 & )
 
 mkdir -p /etc/init.d
 touch /etc/init.d/rcS

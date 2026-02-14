@@ -1,26 +1,64 @@
 #!/bin/sh
-# (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
+#
+# Origin: Rob Landley (https://landley.net/toybox/)
+#
+# Customised and maintaned by Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+################################################################################
 
-echo
-mount -t proc none /proc
-mount -t sysfs none /sys
-mount -t devtmpfs none /dev
+export HOME=/home PATH=/bin:/sbin
 
+if ! mountpoint -q dev; then
+  mount -t devtmpfs dev dev
+  [ $$ -eq 1 ] && ! 2>/dev/null <0 && exec 0<>/dev/console 1>&0 2>&1
+  for i in ,fd /0,stdin /1,stdout /2,stderr
+  do ln -sf /proc/self/fd${i/,*/} dev/${i/*,/}; done
+  mkdir -p dev/shm
+  chmod +t /dev/shm
+fi
+mountpoint -q dev/pts || { mkdir -p dev/pts && mount -t devpts dev/pts dev/pts;}
+mountpoint -q proc || mount -t proc proc proc
+mountpoint -q sys || mount -t sysfs sys sys
+echo 0 99999 > /proc/sys/net/ipv4/ping_group_range
+
+if [ $$ -ne 1 ]; then # for chroot
+  /bin/sh
+  umount /dev/pts /dev /sys /proc
+  exit
+fi
+
+mountpoint -q mnt || [ -e /dev/?da ] && mount /dev/?da /mnt
+
+# Setup networking for QEMU (needs /proc)
+ifconfig lo 127.0.0.1
+ifconfig eth0 10.0.2.15
+route add default gw 10.0.2.2
+[ "$(date +%s)" -lt 1000 ] && timeout 2 sntp -sq 10.0.2.2 # Ask host
+[ "$(date +%s)" -lt 10000000 ] && sntp -sq time.google.com
+
+# Run package scripts (if any)
+for i in $(ls -1 /etc/rc 2>/dev/null | sort); do . /etc/rc/"$i"; done
+echo 3 > /proc/sys/kernel/printk
+
+[ -z "$HANDOFF" ] && [ -e /mnt/init ] && HANDOFF=/mnt/init
+[ -z "$HANDOFF" ] && HANDOFF=/bin/sh
+
+( find / >/dev/null 2>&1 & sleep 0.01 )
 bttm=$(cut -d' ' -f1 /proc/uptime)
-( find / >/dev/null 2>&1 & )
-
-mkdir -p /etc/init.d
-touch /etc/init.d/rcS
-chmod +x /etc/init.d/rcS
-
-mkdir -p /var/log
-touch /var/log/syslog
-
-uname -a; sleep 1; echo "
-
+acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
+while true; do
+  uname -a; echo -e "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
-                System uptime $bttm seconds          
+        System uptime was ${bttm}s at the 1st console         
       ===============================================
+       type command 'reboot -f' to shutdown this VM
 "
-exec /linuxrc
+  setsid -c <>/dev/$acnsl >&0 2>&1 $HANDOFF; 
+  echo -e "\e[?7h
+      ==== Press ENTER to start another console ===="
+  head -n 1 | grep -q x && break
+done
+reboot -f &
+sleep 5
+

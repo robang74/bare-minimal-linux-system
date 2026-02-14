@@ -1,0 +1,9 @@
+# TODO
+
++ update the kernel
++ update the busybox
++ add zram in kernel
++ check for vrtio in kernel
++ check cosmos build for busybox
++ create a auto-voiding rcS for init additions
++ redirect the kernel output on the /var/log/syslog

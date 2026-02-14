@@ -1,4 +1,6 @@
 #!/bin/sh
+# (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
+
 echo
 mount -t proc none /proc
 mount -t sysfs none /sys
@@ -10,9 +12,11 @@ bttm=$(cut -d' ' -f1 /proc/uptime)
 mkdir -p /etc/init.d
 touch /etc/init.d/rcS
 chmod +x /etc/init.d/rcS
-uname -a
 
-sleep 1; echo "
+mkdir -p /var/log
+touch /var/log/syslog
+
+uname -a; sleep 1; echo "
 
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64

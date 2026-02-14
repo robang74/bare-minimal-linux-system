@@ -6,9 +6,9 @@
 > in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
 > has been added to facilitate the use for those clone or download the zip file.
 
-- Linux Kernel: Version-6.5.7
+- Linux Kernel version 5.13.2
 
-- BusyBox: Version-1.36.1
+- BusyBox version 1.33.1
 
 ---
 

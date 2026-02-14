@@ -6,9 +6,11 @@
 > in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
 > has been added to facilitate the use for those clone or download the zip file.
 
-- Linux Kernel version 5.13.2
+- **Linux** Kernel version 5.13.2
 
-- BusyBox version 1.33.1
+- **BusyBox** version 1.33.1
+
+- **ToyBox** 0.8.13 &nbsp; (*as a lighter alternative*)
 
 ---
 
@@ -19,6 +21,8 @@
   - or downlod and extract the [zip archive](https://github.com/robang74/bare-minimal-linux-system/archive/refs/heads/main.zip) of the wholre repository.
 
 - launch with the script `sh start.sh` the QEMU virtual machine
+
+- alternatives: [initrobfs.cpio.gz](initrobfs.cpio.gz) with toybox and Linux [x86_64.tgz](https://landley.net/toybox/downloads/binaries/mkroot/0.8.13/x86_64.tgz) 6.17.0 w/ network support by Rob Landlay
 
 ### QEMU install for Ubuntu
 
@@ -414,9 +418,9 @@ killall qemu-system-x86_64
 
 - [Tutorial: Building the Simplest Possible Linux System](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
 
-- [landlay.net](https://landley.net/aboriginal/about.html)
+- [Landlay.net/toybox](https://landley.net/toybox/)
 
-- [kernel.org](https://www.kernel.org/)
+- [Kernel.org](https://www.kernel.org/)
 
 - [Linux kernel QEMU setup](https://vccolombo.github.io/cybersecurity/linux-kernel-qemu-setup/)
 

@@ -47,7 +47,7 @@ echo 3 > /proc/sys/kernel/printk
 bttm=$(cut -d' ' -f1 /proc/uptime)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 while true; do
-  uname -a; echo -e "\e[?7h
+  echo; uname -a; echo -e "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
         System uptime was ${bttm}s at the 1st console         

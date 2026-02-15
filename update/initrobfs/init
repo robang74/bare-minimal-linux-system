@@ -29,6 +29,10 @@ fi
 
 mountpoint -q mnt || [ -e /dev/?da ] && mount /dev/?da /mnt
 
+# caching the filesystems in background
+
+( find / >/dev/null 2>&1 & sleep 0.01 )
+
 # Setup networking for QEMU (needs /proc)
 ifconfig lo 127.0.0.1
 ifconfig eth0 10.0.2.15
@@ -43,7 +47,6 @@ echo 3 > /proc/sys/kernel/printk
 [ -z "$HANDOFF" ] && [ -e /mnt/init ] && HANDOFF=/mnt/init
 [ -z "$HANDOFF" ] && HANDOFF=/bin/sh
 
-( find / >/dev/null 2>&1 & sleep 0.01 )
 bttm=$(cut -d' ' -f1 /proc/uptime)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 while true; do

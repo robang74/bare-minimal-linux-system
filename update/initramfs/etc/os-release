@@ -1,0 +1,4 @@
+NAME="mkroot"
+VERSION="0.8.13"
+HOME_URL="https://github.com/robang74/bare-minimal-linux-system"
+ORIG_URL="https://landley.net/toybox"

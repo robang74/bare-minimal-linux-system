@@ -1,21 +1,35 @@
 #!/bin/sh
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
 
-export HOME=/ PATH=/bin:/sbin:/usr/bin:/usr/sbin
+# system up rising
 
 mount -t proc none /proc
 mount -t sysfs none /sys
 mount -t devtmpfs none /dev
 
-echo 3 > /proc/sys/kernel/printk
+if [ -r /bin/busybox ]; then
+  mkdir -p /etc/init.d
+  touch /etc/init.d/rcS
+  chmod +x /etc/init.d/rcS
+fi
+
+# caching filesystems
+
+( find / >/dev/null 2>&1 & sleep 0.01 )
+
+# enviroment config
 
 bttm=$(cut -d' ' -f1 /proc/uptime)
+home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
+acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
+echo "acnsl: $acnsl"
+export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-mkdir -p /etc/init.d
-touch /etc/init.d/rcS
-chmod +x /etc/init.d/rcS
+echo 3 > /proc/sys/kernel/printk
+stty -echoctl
+echo
 
-echo; uname -a
+uname -a
 echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64

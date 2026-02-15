@@ -1,11 +1,17 @@
 #!/bin/bash
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
 
+qemubin="qemu-system-x86_64"
 append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
+if [ "x${1:-}" = "x-r" ]; then
+  rfsimg="initrobfs.cpio"
+  shift; set -- "$rfsimg" "$@"
+else
+  rfsimg="${1:-initramfs.cpio}"
+fi
+test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
 kimg="${2:-bzImage}"
-qemubin="qemu-system-x86_64"
-rfsimg="${1:-initramfs.cpio}"; test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
 tmpdir=${3:-cpio.tmp}
 
 # Updating the image before start it
@@ -30,10 +36,9 @@ fi
 
 # Starting the QEMU virtual machine
 
-cmd="$qemubin -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot\
-    -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS\
-    -append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0'"\
+cmd="$qemubin -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
+-enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS \
+-append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0'"
 
-sh -c "$cmd $@"; stty sane; printf '\e[?7h'
-
+sh -c "$cmd"; stty sane; printf '\e[?7h'
 

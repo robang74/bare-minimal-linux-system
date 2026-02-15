@@ -7,6 +7,9 @@ mount -t proc none /proc
 mount -t sysfs none /sys
 mount -t devtmpfs none /dev
 
+echo Y > /sys/module/printk/parameters/time
+echo 3 > /proc/sys/kernel/printk
+
 if [ -r /bin/busybox ]; then
   mkdir -p /etc/init.d
   touch /etc/init.d/rcS /etc/fstab
@@ -19,20 +22,19 @@ fi
 
 # enviroment config
 
-bttm=$(cut -d' ' -f1 /proc/uptime)
+#bttm=$(cut -d' ' -f1 /proc/uptime)
+bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-echo 3 > /proc/sys/kernel/printk
-stty -echoctl
 echo
-
 uname -a
+stty -echoctl
 echo -ne "Active console: $acnsl\e[?7h\n
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
-        System uptime was ${bttm}s at the 1st console         
+       System dmsg time was ${bttm}s at the 1st console
       ===============================================
        type command 'reboot -f' to shutdown this VM
 "

@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-export HOME=/home PATH=/bin:/sbin
+export HOME=/home TERM=xterm PATH=/bin:/sbin
 
 if ! mountpoint -q dev; then
   mount -t devtmpfs dev dev
@@ -42,18 +42,21 @@ route add default gw 10.0.2.2
 
 # Run package scripts (if any)
 for i in $(ls -1 /etc/rc 2>/dev/null | sort); do . /etc/rc/"$i"; done
+echo Y > /sys/module/printk/parameters/time
 echo 3 > /proc/sys/kernel/printk
+stty -echoctl
 
 [ -z "$HANDOFF" ] && [ -e /mnt/init ] && HANDOFF=/mnt/init
 [ -z "$HANDOFF" ] && HANDOFF=/bin/sh
 
-bttm=$(cut -d' ' -f1 /proc/uptime)
+# bttm=$(cut -d' ' -f1 /proc/uptime)
+bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 while true; do
   echo; uname -a; echo -e "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
-        System uptime was ${bttm}s at the 1st console         
+       System dmsg time was ${bttm}s at the 1st console
       ===============================================
        type command 'reboot -f' to shutdown this VM
 "

@@ -9,7 +9,7 @@ mount -t devtmpfs none /dev
 
 if [ -r /bin/busybox ]; then
   mkdir -p /etc/init.d
-  touch /etc/init.d/rcS
+  touch /etc/init.d/rcS /etc/fstab
   chmod +x /etc/init.d/rcS
 fi
 
@@ -22,7 +22,6 @@ fi
 bttm=$(cut -d' ' -f1 /proc/uptime)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
-echo "acnsl: $acnsl"
 export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 echo 3 > /proc/sys/kernel/printk
@@ -30,7 +29,7 @@ stty -echoctl
 echo
 
 uname -a
-echo -ne "\e[?7h
+echo -ne "Active console: $acnsl\e[?7h\n
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
         System uptime was ${bttm}s at the 1st console         

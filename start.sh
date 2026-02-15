@@ -4,6 +4,17 @@
 qemubin="qemu-system-x86_64"
 append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
+update=0
+tstimg=0
+if [ "x${1:-}" = "x-t" ]; then
+  tstimg=1
+  shift;
+elif [ "x${1:-}" = "x-u" ]; then
+  update=1
+  tstimg=1
+  shift;
+fi
+
 if [ "x${1:-}" = "x-r" ]; then
   rfsimg="initrobfs.cpio"
   shift; set -- "$rfsimg" "$@"
@@ -33,6 +44,11 @@ if [ -d update/$rfsdir/ ]; then
     rm -rf $tmpdir
   fi
 fi
+
+if [ $update -ne 0 ]; then
+  md5sum $rfsimg > update/$rfsdir.md5
+fi
+test $tstimg -eq 0 || exit
 
 # Starting the QEMU virtual machine
 

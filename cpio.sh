@@ -20,7 +20,7 @@ while true; do
       chmod -c +x init bin/sh
       find . -exec touch -h -t 202601010000 {} +
       find . -mindepth 1 -printf "%P\n" | sort | cpio -o -H newc \
-        --reproducible --owner 0:0 | $zcmd -nc > ../$cpiofl
+        --reproducible --owner 0:0 | $zcmd -9nc > ../$cpiofl
       cd - >/dev/null
       du -ks $cpiofl | sed -e "s/\t/ Kb /"
   else

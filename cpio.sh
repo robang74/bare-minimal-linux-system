@@ -11,18 +11,21 @@ while true; do
   if [ "x$action" = "x-e" ]; then
       mkdir -p $tmpdir
       zcat $cpiofl | cpio -idmv -D $tmpdir
+  elif [ "x$action" = "x-d" ]; then
+      rm -rf $tmpdir
   elif [ "x$action" = "x-c" ]; then
       rm -f $cpiofl
       test -d $tmpdir || break
       cd $tmpdir
       chmod -c +x init bin/sh
-      find . -mindepth 1 -printf "%P\n" | cpio -o -H newc \
+      find . -exec touch -h -t 202601010000 {} +
+      find . -mindepth 1 -printf "%P\n" | sort | cpio -o -H newc \
         --reproducible --owner 0:0 | $zcmd -nc > ../$cpiofl
       cd - >/dev/null
       du -ks $cpiofl | sed -e "s/\t/ Kb /"
   else
       echo
-      echo "Usage: cpio.sh -e|-c file dir"
+      echo "Usage: cpio.sh -e|-c|-d [file [dir]]"
       echo
   fi
   break

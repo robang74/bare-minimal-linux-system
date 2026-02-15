@@ -29,6 +29,11 @@
 
 - alternatives: [initrobfs.cpio.gz](initrobfs.cpio.gz) with toybox and Linux [x86_64.tgz](https://landley.net/toybox/downloads/binaries/mkroot/0.8.13/x86_64.tgz) 6.17.0 w/ network support by Rob Landlay
 
+- boot time in a QEMU single processor instance takes **1/10 of second**, on average (runs on a Thinkpad 2019, i5-8365U CPU). 
+
+![boot time](images/p0.png)
+---
+
 ### QEMU install for Ubuntu
 
 ```sh

@@ -16,6 +16,11 @@
 
 ## Quick start
 
+> [!NOTE]
+>
+> Note that `start.sh` updates the initramfs.cpio.gz using the `update/initramfs` content
+> and checking the  `update/initramfs.md5` against the result for reproducibility.
+
 - download [`bzImage`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/bzImage), [`initramfs.cpio.gz`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/initramfs.cpio.gz) and the [`start.sh`](https://github.com/robang74/bare-minimal-linux-system/raw/refs/heads/main/start.sh) script
 
   - or downlod and extract the [zip archive](https://github.com/robang74/bare-minimal-linux-system/archive/refs/heads/main.zip) of the wholre repository.

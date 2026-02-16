@@ -52,8 +52,10 @@ stty -echoctl
 # bttm=$(cut -d' ' -f1 /proc/uptime)
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
+entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 while true; do
-  echo; uname -a; echo -e "\e[?7h
+echo -ne "Active console: $acnsl, entropy: $entrp bits
+\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
        System dmsg time was ${bttm}s at the 1st console

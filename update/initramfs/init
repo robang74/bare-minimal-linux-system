@@ -26,12 +26,15 @@ fi
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
+entrp=$(cat /proc/sys/kernel/random/entropy_avail)
+
 export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 echo
 uname -a
 stty -echoctl
-echo -ne "Active console: $acnsl\e[?7h\n
+echo -ne "Active console: $acnsl, entropy: $entrp bits
+\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
        System dmsg time was ${bttm}s at the 1st console

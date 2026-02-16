@@ -211,7 +211,13 @@ mkdir -p ~/workspace_kernel/linux-kernel
 cp linux-6.5.7/arch/x86/boot/bzImage ~/workspace_kernel/linux-kernel
 ```
 
-### Creating Initramfs 
+---
+
+### Creating Initramfs
+
+> [!NOTE]
+> 
+> hint: git update-index --skip-worktree *.cpio.gz
 
 Downloading latest Busybox
 

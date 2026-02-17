@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Origin: Rob Landley (https://landley.net/toybox/)
+# Origin: Rob Landley (https://landley.net/toybox/), license 0BSD (as toybox)
 #
 # Customised and maintaned by Roberto A. Foglietta <roberto.foglietta@gmail.com>
 #

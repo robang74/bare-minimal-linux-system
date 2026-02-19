@@ -17,7 +17,7 @@
 ## Quick start
 
 > [!NOTE]
->
+> 
 > Note that `start.sh` updates the initramfs.cpio.gz using the `update/initramfs` content
 > and checking the  `update/initramfs.md5` against the result for reproducibility.
 
@@ -29,9 +29,9 @@
 
 - alternatives: [initrobfs.cpio.gz](initrobfs.cpio.gz) with toybox and Linux [x86_64.tgz](https://landley.net/toybox/downloads/binaries/mkroot/0.8.13/x86_64.tgz) 6.17.0 w/ network support by Rob Landlay
 
-- boot time in a QEMU single processor instance takes **1/10 of second**, on average (runs on a Thinkpad 2019, i5-8365U CPU). 
+- boot time in a QEMU single processor instance takes **1/10 of second**, on average (runs on a Thinkpad 2019, i5-8365U CPU).
 
-![boot time](images/p0.png)
+![boot time](imgs/p0.png)
 ---
 
 ### QEMU install for Ubuntu
@@ -69,17 +69,17 @@ sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils \
     libssl-dev bc flex libelf-dev bison qemu-system-x86
 ```
 
-### Download 
+### Download
 
-```sh 
+```sh
 wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.5.7.tar.xz
 tar -xvf linux-6.5.7.tar.xz
 cd linux-6.5.7
 ```
 
-### Configure tiniest possible kernel 
+### Configure tiniest possible kernel
 
-```sh  
+```sh
 make allnoconfig
 ```
 
@@ -88,7 +88,7 @@ This will create .config file setting values to 'n' as much as possible.
 ### Customization
 
 ```sh
-make menuconfig 
+make menuconfig
 ```
 
 or alternatively from Linux-5.10.54 and newer
@@ -101,15 +101,15 @@ make kvmconfig # modifies .config to set up everything necessary for it to run o
 
 This will open a window with many Linux kernel configuration settings. You can enable or disable those settings and customize the Linux kernel as needed.
 
-Tips: use left, right, up and down arrow key to navigate 
+Tips: use left, right, up and down arrow key to navigate
 
 - Now set following options-
 
-#### Option 1: Enable 64 bit support 
+#### Option 1: Enable 64 bit support
 
-- Enable 64 support 
+- Enable 64 support
 
-<img src="images/02.png" alt="64bit kernel"/>
+<img src="imgs/02.png" alt="64bit kernel"/>
 
 #### Option 2: Hostname
 
@@ -117,25 +117,25 @@ Tips: use left, right, up and down arrow key to navigate
 
 - Set a Host name `Embedded_linux`
 
-<img src="images/03.png" alt="set hostname"/>
+<img src="imgs/03.png" alt="set hostname"/>
 
 #### Option 3: Enable support for RAM disk
 
 - General Setup >> Initial RAM filesystem and RAM disk (initramfs/initrd) support
 
-<img src="images/04.png" alt="ram disk"/>
+<img src="imgs/04.png" alt="ram disk"/>
 
 #### Option 4: Configure standard kernel features
 
 - General Setup > Configure standard kernel features (expert users)
 
-<img src="images/05.png" alt="configure standard kernel"/>
+<img src="imgs/05.png" alt="configure standard kernel"/>
 
 #### Option 5: Ensure Gzip Kernel compression
 
 - General Setup >kernel compression mode (Gzip)
 
-<img src="images/06.png" alt="gzip"/>
+<img src="imgs/06.png" alt="gzip"/>
 
 #### Option 6: ELF binary and script
 
@@ -143,7 +143,7 @@ Tips: use left, right, up and down arrow key to navigate
 
 - Executable file formats > Kernel support for scripts starting with #!
 
-<img src="images/07.png" alt="elf"/>
+<img src="imgs/07.png" alt="elf"/>
 
 #### Option 7: Enable devtmpfs
 
@@ -151,13 +151,13 @@ Tips: use left, right, up and down arrow key to navigate
 
 - Device Driver > Generic Driver Options > Automount devtmpfs at /dev, after the kernel mounted the rootfs
 
-<img src="images/08.png" alt="devtmfs"/> 
+<img src="imgs/08.png" alt="devtmfs"/>
 
 #### Option 8: Enable TTY
 
 - Device Driver > Character devices > Enable TTY
 
-<img src="images/09.png" alt="tty"/> 
+<img src="imgs/09.png" alt="tty"/>
 
 #### Option 9: Enable Serial Drivers
 
@@ -165,7 +165,7 @@ Tips: use left, right, up and down arrow key to navigate
 
 - Device Driver > Character devices > Serial Drivers  > Console on 8250/16550 and compatible serial port
 
-<img src="images/10.png" alt="serial"/> 
+<img src="imgs/10.png" alt="serial"/>
 
 #### Option 10: Pseudo filesystems
 
@@ -173,7 +173,7 @@ Tips: use left, right, up and down arrow key to navigate
 
 - File systems > Pseudo filesystems > /sysfs file system support
 
-<img src="images/11.png" alt="filesystem"/> 
+<img src="imgs/11.png" alt="filesystem"/>
 
 Now, save and close the configuration window.
 
@@ -204,7 +204,7 @@ ls -sh bzImage
 
 Linux Kernel Size: 1.7MB
 
-Create a working Directory and put the linux kernel image 
+Create a working Directory and put the linux kernel image
 
 ```sh
 mkdir -p ~/workspace_kernel/linux-kernel
@@ -227,7 +227,7 @@ wget https://busybox.net/downloads/busybox-1.36.0.tar.bz2
 
 change working path to workspace directory
 
-```sh 
+```sh
 cd ~/workspace_kernel
 ```
 
@@ -249,11 +249,11 @@ Customize busybox
 make menuconfig
 ```
 
-This will start configuration menu for BusyBox. We need only one setting. 
+This will start configuration menu for BusyBox. We need only one setting.
 
 Settings > Build static binary (no shared libs)
 
-<img src="images/12.png" alt="busybox menuconfig"/> 
+<img src="imgs/12.png" alt="busybox menuconfig"/>
 <br/>
 <br/>
 
@@ -263,7 +263,7 @@ It is time to build busybox.
 
 Build
 
-```sh 
+```sh
 make -j4
 make -j <number of CPU core>
 ```
@@ -280,7 +280,7 @@ More general command
 make -j ${nproc}
 ```
 
-Install  
+Install 
 
 ```sh
 make install
@@ -299,7 +299,7 @@ make CONFIG_PREFIX=$PWD/woris install
 
 change working path to workspace directory
 
-```sh 
+```sh
 cd ~/workspace_kernel
 ```
 
@@ -311,7 +311,7 @@ mkdir embedded_linux && cd embedded_linux
 
 Now Craete `etc`, `proc`, `sys` and `dev` directory.
 
-```sh 
+```sh
 mkdir -p etc proc sys dev
 ```
 
@@ -387,7 +387,7 @@ qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio -nographic \
 
 ---
 
-## Congratulations!! 
+## Congratulations!!
 
 You Successfully build a custom linux kernel & RootFS.
 
@@ -408,7 +408,7 @@ find
 
 To kill qemu open a new terminal and type
 
-```sh 
+```sh
 killall qemu-system-x86_64
 ```
 
@@ -416,11 +416,11 @@ killall qemu-system-x86_64
 
 ## Project Screen Shotss
 
-<img src="images/p1.png" alt="p1" />
+<img src="imgs/p1.png" alt="p1" />
 
-<img src="images/p2.png" alt="p1" />
+<img src="imgs/p2.png" alt="p1" />
 
-<img src="images/p3.png" alt="p1" />
+<img src="imgs/p3.png" alt="p1" />
 
 ---
 

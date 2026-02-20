@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-export HOME=/home TERM=xterm PATH=/bin:/sbin
+export TMPDIR=/dev/shm HOME=/home TERM=xterm PATH=/bin:/sbin
 
 if ! mountpoint -q dev; then
   mount -t devtmpfs dev dev

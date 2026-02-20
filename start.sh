@@ -52,9 +52,10 @@ test $tstimg -eq 0 || exit
 
 # Starting the QEMU virtual machine
 
-cmd="$qemubin -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
+cmd="$qemubin -m 32 -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
 -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS \
--append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0'"
+-append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0' \
+-watchdog i6300esb -watchdog-action reset"
 
 sh -c "$cmd"; stty sane; printf '\e[?7h'
 

@@ -7,6 +7,9 @@ mount -t proc none /proc
 mount -t sysfs none /sys
 mount -t devtmpfs none /dev
 
+mkdir -p dev/pts &&
+mount -t devpts dev/pts dev/pts;
+
 echo Y > /sys/module/printk/parameters/time
 echo 3 > /proc/sys/kernel/printk
 
@@ -15,6 +18,15 @@ if [ -r /bin/busybox ]; then
   touch /etc/init.d/rcS /etc/fstab
   chmod +x /etc/init.d/rcS
 fi
+
+tmpdir="/dev/shm"
+if ! grep -qw tmpfs /proc/filesystems; then
+  ramsize=$(sed -ne "s/MemAvailable: *\([0-9]\+\) kB/\\1/p" /proc/meminfo)
+  shmsize=$(( ( ramsize + 4096 ) >> 12 ))
+  mount -o size=${shmsize}M,nodev,nosuid -t tmpfs none $tmpdir &&
+  echo "Temporary $tmpdir uses max ${shmsize}M of system RAM"  || tmpdir="/tmp"
+fi
+mkdir -p $tmpdir/ && chmod +t $tmpdir
 
 # caching filesystems
 
@@ -28,7 +40,7 @@ home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 
-export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export TMPDIR=$tmpdir TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 echo
 uname -a

@@ -54,8 +54,7 @@ test $tstimg -eq 0 || exit
 
 cmd="$qemubin -m 32 -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
 -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS \
--append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0' \
--watchdog i6300esb -watchdog-action reset"
+-append 'HOST=x86_64 root=/dev/ram0 rdinit=/init console=ttyS0 net.ifnames=0'"
 
 sh -c "$cmd"; stty sane; printf '\e[?7h'
 

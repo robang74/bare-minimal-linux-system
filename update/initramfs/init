@@ -40,7 +40,8 @@ home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 
-export TMPDIR=$tmpdir TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export TERM=xterm HOME=$home PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 
 echo
 uname -a

@@ -53,6 +53,7 @@ stty -echoctl
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
+export GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 while true; do
 echo -ne "Active console: $acnsl, entropy: $entrp bits
 \e[?7h

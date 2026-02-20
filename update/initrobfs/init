@@ -63,7 +63,7 @@ echo -ne "Active console: $acnsl, entropy: $entrp bits
       ===============================================
        type command 'reboot -f' to shutdown this VM
 "
-  setsid -c <>/dev/$acnsl >&0 2>&1 $HANDOFF; 
+  setsid -c <>/dev/$acnsl >&0 2>&1 $HANDOFF
   echo -e "\e[?7h
       ==== Press ENTER to start another console ===="
   head -n 1 | grep -q x && break

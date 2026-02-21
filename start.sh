@@ -34,7 +34,7 @@ if [ -d update/$rfsdir/ ]; then
   printf "Checking is ramfs update "
   if ! chkmd5; then
     sh cpio.sh -e $rfsimg $tmpdir 2>&1 | grep -E "cpio: | blocks"
-    cp -arf -pd update/common/* update/$rfsdir/* $tmpdir 2>&1
+    cp -arf -pd update/common/* update/$rfsdir/* $tmpdir/ 2>&1
     sh cpio.sh -c $rfsimg $tmpdir 2>&1
     if ! chkmd5; then
       echo "ERROR: ramfs updated doesn't match md5 checksum"

@@ -30,7 +30,6 @@ verified and it relies on the [musl.cc](https://musl.cc/) 2021-11-23 binary rele
 At this point the working directory is the musl tool-chain path and in this case
 
 - `path=$PWD   # would perfectly fine to declare and use`
-- `path="../"  # or even simpler for this specific case`
 
 while the busybox folder would be a subfolder of that path, hence
 
@@ -38,8 +37,8 @@ while the busybox folder would be a subfolder of that path, hence
 
 In more general terms:
 
-- `type="cross"  # or native`
-- `arch="i686-linux"  # or any other available and suitable`
+- `type="native"  # or cross, depending the host vs target`
+- `arch="x86_64-linux"  # or any other available and suitable`
 - `path="$HOME/Downloads/$arch-musl-$type/"  # example, default for Ubuntu`
 
 At this point, we are ready to download, configure and build a musl-static bb:
@@ -57,8 +56,8 @@ url="raw.githubusercontent.com/robang74/bare-minimal-linux-system/"
 wget $url/$ref/bmls-v0.2-bb-full.config -O .config
 
 make oldconfig # to adapt the config for current busybox version
-make -j$(nproc) CFLAGS="-Os -static -s --fast-math -flto -fPIC -I/$path" \
-  CC="$path/bin/$arch-musl-gcc" LDFLAGS="-Wl,-z,notext -Wl,-rpath=/$path" 
+make -j$(nproc) CFLAGS="-Os -static -s --fast-math -flto -fPIC -I$path" \
+  CC="$path/bin/$arch-musl-gcc" LDFLAGS="-Wl,-z,notext -Wl,-rpath=$path" 
 ```
 
 The `make` command shows that `.config` has been developed agnostic in relation

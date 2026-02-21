@@ -1,6 +1,6 @@
 # Busybox for Bare Minimal Linux System
 
-- (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, CC BY-NC-ND 4.0
+(c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, CC BY-NC-ND 4.0
 
 Configuration developed for the master::HEAD as publicly available on 2026-02-21
 tagged bmls-v0.2 on the github fork of the official busybox.net git repository.
@@ -10,9 +10,8 @@ tagged bmls-v0.2 on the github fork of the official busybox.net git repository.
 The configuration `-full` isn't aim to absolute minimalism but to a full operative
 system by cutting down the size of it and not the features/functionality like the
 networking (and the `full` config also support `httpd` for being a micro-server).
-
 It can be compiled with `musl-gcc` on Ubuntu in native architecture but serious
-limitations (in 22.04, at least) when `-m32` is used for a different arch 64->32.
+limitations (in 22.04, at least) when `-m32` is used for a different arch.
 
 Therefore, a more replicable procedure (aka less dependant by the dev's host) is
 verified and it rely on the [musl.cc](https://musl.cc/) 2021-11-23 binary release.
@@ -67,4 +66,6 @@ Compiling for the native system using the `gnulibc` for the static link is easie
 
 but the product will be near under or above 2.2MB instead of less than 800KB. So,
 it makes sense to use musl even when the target architecture is 1:1 with the host.
-
+By converse, it makes also sense to have an isolated VM which has no code for even
+networking with the host, as every security expert, a sane configuration for testing
+in a safe enviroment every stuff we like to investigate.

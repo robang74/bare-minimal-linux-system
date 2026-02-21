@@ -22,30 +22,30 @@ limitations (in 22.04, at least) when `-m32` is used for a different arch.
 Therefore, a more replicable procedure (aka less dependant by the dev's host) is
 verified and it rely on the [musl.cc](https://musl.cc/) 2021-11-23 binary release.
 
-- 1. download your selected musl tool-chain archive
-- 2. unzip it creating a folder and jump into it
-- 3. download the busybox archive and extract it
-- 4. prepare the your enviroment for compiling
+- `1.` download your selected musl tool-chain archive
+- `2.` unzip it creating a folder and jump into it
+- `3.` download the busybox archive and extract it
+- `4.` prepare the your enviroment for compiling
 
 At this point the working directory is the musl tool-chain path and in this case
 
-- `path=$PWD`  # would perfecty fine to declare and use
-- `path="../"` # or even simpler for this specific case
+- `path=$PWD   # would perfecty fine to declare and use`
+- `path="../"  # or even simpler for this specific case`
 
 while the busybox folder would be a subfolder of that path, hence
 
-- `cd $path/busybox*/` # will change the working path for cross-compiling
+- `cd $path/busybox*/  # will change the working path for cross-compiling`
 
 In more general terms:
 
-- `type="cross"` # or native
-- `arch="i686-linux"` # or any other available and suitable
-- `path="$HOME/Downloads/$arch-musl-$type/"` # example, default for Ubuntu
+- `type="cross"  # or native`
+- `arch="i686-linux"  # or any other available and suitable`
+- `path="$HOME/Downloads/$arch-musl-$type/"  # example, default for Ubuntu`
 
 At this point, we are ready to download, configure and build a musl-static bb:
 
-- 5. download the configure file and properly rename it
-- 6. clean the building enviroment and build busybox
+- `5.` download the configure file and properly rename it
+- `6.` clean the building enviroment and build busybox
 
 Supposing to use `wget` but `curl` is fine as well:
 

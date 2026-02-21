@@ -8,9 +8,9 @@
 
 - **Linux** Kernel version 5.13.2 (or [6.17.0](https://landley.net/bin/mkroot/0.8.13/) by mkroot)
 
-- **BusyBox** version 1.33.1
+- **BusyBox** version 1.33.1 (or a newer version as explained in [here](busybox/README.md))
 
-- **ToyBox** 0.8.13 &nbsp; (*as a lighter alternative*)
+- **ToyBox** 0.8.13 &nbsp; (as a lighter alternative, downloaded from mkroot project)
 
 ---
 
@@ -57,6 +57,32 @@ This is an optional but useful for those who wants customise the system quickly
 sudo apt install fakeroot
 ```
 
+---
+
+## References
+
+- [Mastering Embedded Linux Programming - Second Edition.pdf](https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition)
+
+- [Compiling a kernel for QEMU with graphics support](https://github.com/byte4RR4Y/aarch64-kernel-for-qemu) or [here](docs/aarch64-kernel-for-qemu.md)
+
+- [Setup: Ubuntu host, QEMU vm, x86-64 kernel](https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md) and [create-image.sh](https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh)
+
+- [Tutorial: Building the Simplest Possible Linux System](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
+
+- [Landlay.net/toybox](https://landley.net/toybox/)
+
+- [Kernel.org](https://www.kernel.org/)
+
+- [Linux kernel QEMU setup](https://vccolombo.github.io/cybersecurity/linux-kernel-qemu-setup/)
+
+---
+---
+
+## From the original forked project
+
+The following documentation is a slightly revisited version from the original forked project
+
+---
 ---
 
 ## Configuring the Linux Kernel
@@ -295,7 +321,7 @@ make CONFIG_PREFIX=$PWD/woris install
 
 ---
 
-## Create The RAM DISK Image
+## Create the RAM disk image
 
 change working path to workspace directory
 
@@ -421,22 +447,3 @@ killall qemu-system-x86_64
 <img src="imgs/p2.png" alt="p1" />
 
 <img src="imgs/p3.png" alt="p1" />
-
----
-
-## References
-
-- [Mastering Embedded Linux Programming - Second Edition.pdf](https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition)
-
-- [Compiling a kernel for QEMU with graphics support](https://github.com/byte4RR4Y/aarch64-kernel-for-qemu) or [here](docs/aarch64-kernel-for-qemu.md)
-
-- [Setup: Ubuntu host, QEMU vm, x86-64 kernel](https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md) and [create-image.sh](https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh)
-
-- [Tutorial: Building the Simplest Possible Linux System](https://youtu.be/Sk9TatW9ino?si=d300B9ARC82QXXKG)
-
-- [Landlay.net/toybox](https://landley.net/toybox/)
-
-- [Kernel.org](https://www.kernel.org/)
-
-- [Linux kernel QEMU setup](https://vccolombo.github.io/cybersecurity/linux-kernel-qemu-setup/)
-

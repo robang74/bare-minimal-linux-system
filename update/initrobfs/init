@@ -45,6 +45,7 @@ for i in $(ls -1 /etc/rc 2>/dev/null | sort); do . /etc/rc/"$i"; done
 echo Y > /sys/module/printk/parameters/time
 echo 3 > /proc/sys/kernel/printk
 stty -echoctl
+uname -a
 
 [ -z "$HANDOFF" ] && [ -e /mnt/init ] && HANDOFF=/mnt/init
 [ -z "$HANDOFF" ] && HANDOFF=/bin/sh

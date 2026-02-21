@@ -2,6 +2,12 @@
 
 (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, CC BY-NC-ND 4.0
 
+> [!NOTE]
+>
+> The `full` config cannot work in full with the current `bzImage` which has not the network
+> support compiled in, but it can with the 6.17.0 kernel image from `mkroot` by Rob Landley.
+> Or alternatively, the 6.17.0 kernel config can be used to compile a vanilla LTS version.
+
 Configuration developed for the master::HEAD as publicly available on 2026-02-21
 tagged bmls-v0.2 on the github fork of the official busybox.net git repository.
 

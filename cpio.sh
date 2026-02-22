@@ -17,7 +17,7 @@ while true; do
       rm -f $cpiofl
       test -d $tmpdir || break
       cd $tmpdir
-      chmod -c +x init bin/sh
+      chmod -c +x init bin/sh bin/*ybox
       find . -exec touch -h -t 202601010000 {} +
       find . -mindepth 1 -printf "%P\n" | sort | cpio -o -H newc \
         --reproducible --owner 0:0 | $zcmd -9nc > ../$cpiofl

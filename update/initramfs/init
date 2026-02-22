@@ -14,8 +14,7 @@ echo Y > /sys/module/printk/parameters/time
 echo 3 > /proc/sys/kernel/printk
 
 if [ -r /bin/busybox ]; then
-  mkdir -p /etc/init.d; touch /etc/fstab
-  echo '#!/bin/sh' > /etc/init.d/rcS
+  touch /etc/fstab
   chmod +x /etc/init.d/rcS
 fi
 

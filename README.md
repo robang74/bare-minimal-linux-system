@@ -1,16 +1,20 @@
 # Bare Minimal Linux Kernel & RootFS
 
+- Support this project and in particular the [gzcmd.sh](gzcmd.sh) development donating [here](https://github.com/sponsors/robang74).
+
 > [!NOTE]
 > 
 > Compared to the original project from which this repo has been forked the changes
 > in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
 > has been added to facilitate the use for those clone or download the zip file.
 
-- **Linux** Kernel version 5.13.2 (or [6.17.0](https://landley.net/bin/mkroot/0.8.13/) by mkroot)
+- **Linux** Kernel version 5.13.2 &nbsp; (or [6.17.0](https://landley.net/bin/mkroot/0.8.13/) by mkroot)
 
-- **BusyBox** version 1.33.1 (or a newer version as explained in [here](busybox/README.md))
+- **BusyBox** version 1.33.1 &nbsp; (or a newer version as explained in [here](busybox/README.md))
 
 - **ToyBox** 0.8.13 &nbsp; (as a lighter alternative, downloaded from mkroot project)
+
+- **gzcmd.sh** v0.1.5 &nbsp; (as a PoC of a KISS self-extracting ELF compressor)
 
 ---
 

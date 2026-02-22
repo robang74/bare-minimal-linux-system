@@ -4,6 +4,8 @@
 qemubin="qemu-system-x86_64"
 append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
+# Cope with the user's parametric input
+
 docpio=1
 update=0
 tstimg=0
@@ -19,16 +21,22 @@ if [ "x${1:-}" = "x-T" ]; then
   docpio=0
   shift;
 fi
-
 if [ "x${1:-}" = "x-r" ]; then
   rfsimg="initrobfs.cpio"
   shift; set -- "$rfsimg" "$@"
 else
   rfsimg="${1:-initramfs.cpio}"
 fi
+
 test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
 kimg="${2:-bzImage}"
-tmpdir=${3:-cpio.tmp}
+tmpdir=${3:-}
+
+if [ ! -n "$tmpdir" ]; then
+  tmpdir="cpio.tmp/"
+  trap "rm -rf $tmpdir; return 1" EXIT INT TERM
+  rm -rf $tmpdir
+fi
 
 # Updating the image before start it
 
@@ -40,7 +48,8 @@ if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
   if ! chkmd5; then
     sh cpio.sh -e $rfsimg $tmpdir 2>&1 | grep -E "cpio: | blocks"
     cp -arf -pd update/common/* update/$rfsdir/* $tmpdir/ 2>&1
-    sh cpio.sh -c $rfsimg $tmpdir 2>&1
+    sh cpio.sh -c $rfsimg.new $tmpdir 2>&1
+    rfsimg="$rfsimg.new"
     if ! chkmd5; then
       echo "ERROR: ramfs updated doesn't match md5 checksum"
       echo "       press ENTER to start the QEMU VM anyway."
@@ -51,6 +60,7 @@ if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
 fi
 
 if [ $update -ne 0 ]; then
+  test -r $rfsimg.new && rfsimg="$rfsimg.new"
   md5sum $rfsimg > update/$rfsdir.md5
 fi
 test $tstimg -eq 0 || exit

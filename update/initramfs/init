@@ -1,6 +1,10 @@
 #!/bin/sh
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
 
+# busybox install
+
+if [ -x /bin/busybox ]; then /bin/busybox --install; fi
+
 # system up rising
 
 mount -t proc none /proc

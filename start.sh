@@ -4,6 +4,7 @@
 qemubin="qemu-system-x86_64"
 append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
+docpio=1
 update=0
 tstimg=0
 if [ "x${1:-}" = "x-t" ]; then
@@ -12,6 +13,10 @@ if [ "x${1:-}" = "x-t" ]; then
 elif [ "x${1:-}" = "x-u" ]; then
   update=1
   tstimg=1
+  shift;
+fi
+if [ "x${1:-}" = "x-T" ]; then
+  docpio=0
   shift;
 fi
 
@@ -30,7 +35,7 @@ tmpdir=${3:-cpio.tmp}
 rfsdir=$(echo "$rfsimg" | sed 's/\.cpio\.gz//;s/\.cpio//')
 chkmd5() { echo | md5sum -c update/$rfsdir.md5 2>/dev/null; }
 
-if [ -d update/$rfsdir/ ]; then
+if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
   printf "Checking is ramfs update "
   if ! chkmd5; then
     sh cpio.sh -e $rfsimg $tmpdir 2>&1 | grep -E "cpio: | blocks"

@@ -61,7 +61,7 @@ fi
 
 if [ $update -ne 0 ]; then
   test -r $rfsimg.new && rfsimg="$rfsimg.new"
-  md5sum $rfsimg > update/$rfsdir.md5
+  md5sum $(find $rfsimg update/$rfsdir/ ! -type d) > update/$rfsdir.md5
 fi
 test $tstimg -eq 0 || exit
 
@@ -69,7 +69,18 @@ test $tstimg -eq 0 || exit
 
 cmd="$qemubin -m 32 -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
 -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS \
--append 'HOST=x86_64 root=/dev/ram0 init=/init console=ttyS0 net.ifnames=0'"
+-append 'HOST=x86_64 root=/dev/ram0 init=/init console=ttyS0 net.ifnames=0'   \
+-netdev user,id=net0,restrict=yes -device virtio-net-pci,netdev=net0" # net isolation
+
+if false; then
+qemu-system-x86_64 \
+  -M microvm,x-option-roms=off,pit=off,pic=off,rtc=off,acpi=off \
+  -kernel bzImage \
+  -append "console=ttyS0 root=/dev/vda acpi=off" \
+  -nodefaults -nographic \
+  -device virtio-blk-device,drive=hd0 \
+  -drive file=rootfs.img,format=raw,id=hd0,if=none
+fi
 
 sh -c "$cmd"; stty sane; printf '\e[?7h'
 

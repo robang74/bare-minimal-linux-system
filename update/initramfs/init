@@ -7,12 +7,22 @@ if [ -x /bin/busybox ]; then /bin/busybox --install; fi
 
 # system up rising
 
-mount -t proc none /proc
-mount -t sysfs none /sys
-mount -t devtmpfs none /dev
+mount -t proc procfs /proc
+mount -t sysfs sysfs /sys
+
+tmpdir="/dev/shm"
+if true; then
+  if grep -qw tmpfs /proc/filesystems; then
+    ramsize=$(sed -ne "s/MemAvailable: *\([0-9]\+\) kB/\\1/p" /proc/meminfo)
+    shmsize=$(( ( ramsize + 4096 ) >> 12 ))
+    mount -o size=${shmsize}M,nosuid -t devtmpfs tmpfs /dev
+    echo "Temporary $tmpdir uses max ${shmsize}M of system RAM"  || tmpdir="/tmp"
+  fi
+fi
+mkdir -p $tmpdir/ && chmod +t $tmpdir
 
 mkdir -p dev/pts &&
-mount -t devpts dev/pts dev/pts;
+mount -t devpts devpts dev/pts;
 
 echo Y > /sys/module/printk/parameters/time
 echo 3 > /proc/sys/kernel/printk
@@ -22,14 +32,6 @@ if [ -r /bin/busybox ]; then
   chmod +x /etc/init.d/rcS
 fi
 
-tmpdir="/dev/shm"
-if ! grep -qw tmpfs /proc/filesystems; then
-  ramsize=$(sed -ne "s/MemAvailable: *\([0-9]\+\) kB/\\1/p" /proc/meminfo)
-  shmsize=$(( ( ramsize + 4096 ) >> 12 ))
-  mount -o size=${shmsize}M,nodev,nosuid -t tmpfs none $tmpdir &&
-  echo "Temporary $tmpdir uses max ${shmsize}M of system RAM"  || tmpdir="/tmp"
-fi
-mkdir -p $tmpdir/ && chmod +t $tmpdir
 
 # caching filesystems
 
@@ -56,5 +58,5 @@ echo -ne "Active console: $acnsl, entropy: $entrp bits
        System dmsg time was ${bttm}s at the 1st console
       ===============================================
        type command 'reboot -f' to shutdown this VM
-"
+\n"
 exec /linuxrc

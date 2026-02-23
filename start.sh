@@ -67,7 +67,7 @@ test $tstimg -eq 0 || exit
 
 # Starting the QEMU virtual machine
 
-cmd="$qemubin -m 32 -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
+cmd="$qemubin -m 24M -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
 -enable-kvm -cpu host -machine accel=kvm -boot order=dc -name tinylnx $QARGS \
 -append 'HOST=x86_64 root=/dev/ram0 init=/init console=ttyS0 net.ifnames=0 rodata=n'   \
 -netdev user,id=net0,restrict=yes -device virtio-net-pci,netdev=net0" # net isolation

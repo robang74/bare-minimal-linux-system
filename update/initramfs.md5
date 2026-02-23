@@ -1,1 +1,3 @@
-bfeda5986a02154f8cd23897dfc83803  initramfs.cpio.gz.new
+436e9ad5b874f14e4b25b51b352ceba1  initramfs.cpio.gz.new
+0267867e0db7102f21ae1dcdb622619e  update/initramfs/etc/inittab
+d7312cd5fa7d7ae69b9722c937e745a4  update/initramfs/init

@@ -53,7 +53,7 @@ if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
     if ! chkmd5; then
       echo "ERROR: ramfs updated doesn't match md5 checksum"
       echo "       press ENTER to start the QEMU VM anyway."
-      read x
+      test $update -eq 0 || read x
     fi
     rm -rf $tmpdir
   fi

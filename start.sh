@@ -59,10 +59,12 @@ if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
   fi
 fi
 
+test -r $rfsimg.new && rfsimg="$rfsimg.new"
+
 if [ $update -ne 0 ]; then
-  test -r $rfsimg.new && rfsimg="$rfsimg.new"
   md5sum $(find $rfsimg update/$rfsdir/ ! -type d) > update/$rfsdir.md5
 fi
+
 test $tstimg -eq 0 || exit
 
 # Starting the QEMU virtual machine

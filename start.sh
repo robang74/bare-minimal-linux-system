@@ -6,6 +6,8 @@ append_for_kernel_debug="earlyprintk=serial nokaslr -pidfile vm.pid -panic=1"
 
 # Cope with the user's parametric input
 
+test -r bzImage || ln -sf bzImage.orig bzImage
+
 docpio=1
 update=0
 tstimg=0

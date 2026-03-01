@@ -8,6 +8,9 @@
 
 export TMPDIR=/dev/shm HOME=/home TERM=xterm PATH=/bin:/sbin
 
+mountpoint -q proc || mount -t proc proc proc
+mountpoint -q sys || mount -t sysfs sys sys
+
 if ! mountpoint -q dev; then
   mount -t devtmpfs dev dev
   [ $$ -eq 1 ] && ! 2>/dev/null <0 && exec 0<>/dev/console 1>&0 2>&1
@@ -16,10 +19,13 @@ if ! mountpoint -q dev; then
   mkdir -p dev/shm
   chmod +t /dev/shm
 fi
+
 mountpoint -q dev/pts || { mkdir -p dev/pts && mount -t devpts dev/pts dev/pts;}
-mountpoint -q proc || mount -t proc proc proc
-mountpoint -q sys || mount -t sysfs sys sys
+mountpoint -q mnt || [ -e /dev/?da ] && mount /dev/?da /mnt
+
 echo 0 99999 > /proc/sys/net/ipv4/ping_group_range
+echo Y > /sys/module/printk/parameters/time
+echo 3 > /proc/sys/kernel/printk
 
 if [ $$ -ne 1 ]; then # for chroot
   /bin/sh
@@ -27,44 +33,48 @@ if [ $$ -ne 1 ]; then # for chroot
   exit
 fi
 
-mountpoint -q mnt || [ -e /dev/?da ] && mount /dev/?da /mnt
-
-# caching the filesystems in background
+# caching the filesystems in background ########################################
 
 ( find / >/dev/null 2>&1 & sleep 0.01 )
 
-# Setup networking for QEMU (needs /proc)
+# Setup networking for QEMU (needs /proc) ######################################
+
 ifconfig lo 127.0.0.1
 ifconfig eth0 10.0.2.15
 route add default gw 10.0.2.2
 [ "$(date +%s)" -lt 1000 ] && timeout 2 sntp -sq 10.0.2.2 # Ask host
 [ "$(date +%s)" -lt 10000000 ] && sntp -sq time.google.com
 
-# Run package scripts (if any)
+# Run package scripts (if any) #################################################
+
 for i in $(ls -1 /etc/rc 2>/dev/null | sort); do . /etc/rc/"$i"; done
-echo Y > /sys/module/printk/parameters/time
-echo 3 > /proc/sys/kernel/printk
 stty -echoctl
 uname -a
 
 [ -z "$HANDOFF" ] && [ -e /mnt/init ] && HANDOFF=/mnt/init
 [ -z "$HANDOFF" ] && HANDOFF=/bin/sh
 
-# bttm=$(cut -d' ' -f1 /proc/uptime)
+# bttm=$(cut -d' ' -f1 /proc/uptime) ###########################################
+
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 export GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
+
+echo -e "Active console: $acnsl, entropy: $entrp bits"
+
+if uname -r | grep -qe "^5.15.201$" || true; then
+  dmesg | uchaos -i 16 -d 3 -qT 4 -r 31 -k /dev/random | md5sum
+fi 2>&1 | grep . | sed -e "s,\t-$,-> /dev/random by uChaos,"
+
 while true; do
-echo -ne "Active console: $acnsl, entropy: $entrp bits
-\e[?7h
+  echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
        System dmsg time was ${bttm}s at the 1st console
       ===============================================
        type command 'reboot -f' to shutdown this VM
-
-"
+\n"
   setsid -c <>/dev/$acnsl >&0 2>&1 $HANDOFF
   echo -e "\e[?7h
       ==== Press ENTER to start another console ===="

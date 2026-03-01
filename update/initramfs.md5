@@ -1,3 +1,7 @@
-436e9ad5b874f14e4b25b51b352ceba1  initramfs.cpio.gz.new
+0b2a0370e182b9104d509bdad204f5eb  initramfs.cpio.gz.new
+0d79822f1e74df2427cca58272437c16  update/common/usr/bin/uchaos.upx
+52e7f7d3b6dd0debe1093def7479e3ea  update/common/usr/bin/uchaos.gz.sh
+305c546fdde7b30b669e6ae1b5dafa7a  update/common/usr/bin/RNG_test-musl-static
+1ae117994ac8ea22f84c348b72039338  update/common/usr/bin/uchaos
 0267867e0db7102f21ae1dcdb622619e  update/initramfs/etc/inittab
-d7312cd5fa7d7ae69b9722c937e745a4  update/initramfs/init
+cc612401459d800b73c9450f1256ff39  update/initramfs/init

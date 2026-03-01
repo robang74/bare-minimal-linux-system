@@ -60,10 +60,14 @@ entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 
 echo
-uname -a
+uname -a | sed -e "s,x86_64 x86_64 x86_64,x86_64,"
 stty -echoctl
-echo -ne "Active console: $acnsl, entropy: $entrp bits
-\e[?7h
+echo -e "Active console: $acnsl, entropy: $entrp bits"
+echo
+if uname -r | grep -qe "^5.15.201$" || true; then
+  dmesg | uchaos -i 16 -d 3 -qT 4 -r 31 -k /dev/random | md5sum
+fi 2>&1 | grep . | sed -e "s,  -$, --> /dev/random by uChaos,"
+echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
        System dmsg time was ${bttm}s at the 1st console

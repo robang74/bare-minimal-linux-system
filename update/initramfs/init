@@ -32,7 +32,7 @@ tmpdir="/dev/shm"
 mkdir -p $tmpdir/ && chmod +t $tmpdir
 if grep -qw tmpfs /proc/filesystems; then
   ramsize=$(sed -ne "s/MemAvailable: *\([0-9]\+\) kB/\\1/p" /proc/meminfo)
-  shmsize=$(( ramsize >> 2 ))
+  shmsize="65536"; [ $ramsize -le 131072 ] && shmsize=$(( ramsize >> 2 ))
   tmpdev=/dev/zram0;
   sb=/sys/block/zram0
   if [ -e $sb/reset ]; then

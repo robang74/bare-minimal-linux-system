@@ -1,9 +1,6 @@
-16b8393e4f95de7b86bee34f701d82ba  initrobfs.cpio.gz.new
+886149b1eac771b4cc4bf88af5414ab5  initrobfs.cpio.gz.new
 0d79822f1e74df2427cca58272437c16  update/common/usr/bin/uchaos.upx
-52e7f7d3b6dd0debe1093def7479e3ea  update/common/usr/bin/uchaos.gz.sh
-305c546fdde7b30b669e6ae1b5dafa7a  update/common/usr/bin/RNG_test-musl-static
-1ae117994ac8ea22f84c348b72039338  update/common/usr/bin/uchaos
+ea7aa6c18235d0cea9eb43c1ca50a5e2  update/common/usr/bin/uchaos.gz.sh
 525f77ae65c09c564ed4c1b89422262c  update/initrobfs/etc/os-release
 f855c53e29bb243aa3cc310bb95e33d6  update/initrobfs/etc/resolv.conf
 014c112cd990ffb792ad7861d2604f2d  update/initrobfs/init
-8ecdd483c6717a6c1110a235f7a1bd7b  update/initrobfs/usr/bin/toybox.new

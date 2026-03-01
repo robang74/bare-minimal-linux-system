@@ -79,6 +79,10 @@ test $tstimg -eq 0 || exit
 
 # Starting the QEMU virtual machine
 
+# spxdup="memtest=0 deferred_probe_timeout=0 quiet loglevel=3 page_alloc.shuffle=0"
+# export QTTYC=${QTTYC:-8250.nr_uarts=1 console=ttyS0,115200n8}
+# cmdlnx+=" lpj=1234567"
+
 if [ "${QZERO:-0}" != "0" ]; then
   boxnme="-name tinylnx"
   qaccel="-enable-kvm -cpu host -machine accel=kvm"
@@ -95,12 +99,19 @@ else
   qaccel+=" -icount shift=0,sleep=off,align=off -nodefaults -serial mon:stdio"
 fi
 
-cmd="$qemubin -m 1G -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
+cmd="$qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
     -boot order=dc ${boxnme:-} ${qaccel:-} ${netisl:-} ${cmdlnx:-} ${QARGS:-}"
+
+sh -xc "$cmd"; stty sane; printf '\e[?7h'
 
 # dmesg | uchaos -i 16 -d 3 -qT 4 -r 31 -k /dev/random >/dev/null
 
-# for i in $(seq 1 $((32*8))); do dmesg | uchaos -i 16 -d 3 -r 31 -qM 128; echo $i; done | RNG_test-musl-static stdin64 | tee -a test.log
+# for i in $(seq 1 $((32*8))); do dmesg | uchaos -i 16 -d 3 -r 31 -qM 128;
+#   echo $i; done | RNG_test-musl-static stdin64 | tee -a test.log
+
+# dmesg | head -c 8192 > dmesg.txt
+# for i in $(seq 1 32); do echo $i; uchaos -i 16 -d 3 -r 31 -qM 16 < dmesg.txt;
+#  done > test.dat; RNG_test-musl-static stdin64 < test.dat | tee -a test.log
 
 if false; then
 qemu-system-x86_64 \
@@ -109,6 +120,4 @@ qemu-system-x86_64 \
   -device virtio-blk-device,drive=hd0 \
 
 fi
-
-sh -c "$cmd"; stty sane; printf '\e[?7h'
 

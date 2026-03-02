@@ -1,0 +1,17 @@
+#!/bin/env
+
+alias ll='ls -al'
+export PS1='\u@\h:\w\$ '
+
+urnd_warm_test() {
+  dmesg | head -c 8192 >dmesg.txt; for i in $(seq ${1:-4}); do
+      time -p uchaos -S -M 128 < dmesg.txt;
+  done | RNG_test-musl-static stdin64
+}
+
+urnd_cold_test() {
+  dmesg | head -c 8192 >dmesg.txt; for i in $(seq ${1:-4}); do
+      time -p uchaos -S -M 128 < dmesg.txt > data.$i; done
+  cat data.? | RNG_test-musl-static stdin64
+}
+

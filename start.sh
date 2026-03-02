@@ -115,6 +115,8 @@ echo $cmd
 
 # dmesg | uchaos -S -M 16 | RNG_test-musl-static stdin64
 
+# dmesg | uchaos -S -M 256 > data.01 ; cat data.01 | RNG_test-musl-static stdin64
+
 # for i in $(seq 1 $((32*8))); do dmesg | uchaos -i 16 -d 3 -r 31 -qM 128;
 #   echo $i; done | RNG_test-musl-static stdin64 | tee -a test.log
 

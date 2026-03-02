@@ -5,7 +5,7 @@ export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
 # busybox install
 
-if [ -x /bin/busybox ]; then 
+if [ -x /bin/busybox ]; then
   /bin/busybox --install
   chmod +x /etc/init.d/rcS
   touch /etc/fstab
@@ -15,7 +15,7 @@ fi
 
 mount -t proc procfs /proc
 mount -t sysfs sysfs /sys
-mount -o size=4k,nosuid -t devtmpfs tmpfs /dev
+mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
 mkdir -p dev/pts && mount -t devpts devpts dev/pts;
 
 echo 3 > /proc/sys/kernel/printk
@@ -24,7 +24,7 @@ grep -E "MemAvailable:|MemTotal:" /proc/meminfo
 
 # caching filesystems
 
-( find / >/dev/null 2>&1 & sleep 0.001 )
+( find / >/dev/null 2>&1 & sleep 0.01 )
 
 # temporary folder
 
@@ -54,18 +54,19 @@ mkdir -p $tmpdir/ && chmod +t $tmpdir
 
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
-acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
-entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 
-echo
-uname -a | sed -e "s,x86_64 x86_64 x86_64,x86_64,"
-stty -echoctl
-echo -e "Active console: $acnsl, entropy: $entrp bits"
+echo; uname -a | sed -e "s,x86_64 x86_64 x86_64,x86_64,"
+
+entrp=$(cat /proc/sys/kernel/random/entropy_avail)
+acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >/dev/null; then
-  dmesg | uchaos.gz.sh -i 16 -d 3 -qT 4 -r 31 -k /dev/random | md5sum
+  echo | uchaos.gz.sh -Sk /dev/random | md5sum
 fi 2>&1 | grep . | sed -e "s,  -$, --> /dev/random by uChaos,"
+entrq=$(cat /proc/sys/kernel/random/entropy_avail)
+printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+
 echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
@@ -73,4 +74,5 @@ echo -ne "\e[?7h
       ===============================================
        type command 'reboot -f' to shutdown this VM
 \n"
+stty -echoctl
 exec /linuxrc

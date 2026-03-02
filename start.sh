@@ -77,34 +77,43 @@ fi
 
 test $tstimg -eq 0 || exit
 
-# Starting the QEMU virtual machine
+# Preparing the QEMU virtual machine configuration #############################
 
-# spxdup="memtest=0 deferred_probe_timeout=0 quiet loglevel=3 page_alloc.shuffle=0"
-# export QTTYC=${QTTYC:-8250.nr_uarts=1 console=ttyS0,115200n8}
-# cmdlnx+=" lpj=1234567"
+export QTTYUC=${QTTYUC:-console=ttyS0,115200n8}
 
-if [ "${QZERO:-0}" != "0" ]; then
+cmdlnx="HOST=x86_64 root=/dev/ram0 init=/init $QTTYUC net.ifnames=0 nokaslr"
+
+if [ "${QZERO:-0}" = "0" ]; then
   boxnme="-name tinylnx"
   qaccel="-enable-kvm -cpu host -machine accel=kvm"
   netisl="-netdev user,id=net0,restrict=yes -device virtio-net-pci,netdev=net0"
-  cmdlnx="HOST=x86_64 root=/dev/ram0 init=/init console=ttyS0 net.ifnames=0 nokaslr"
-  cmdlnx="-append '$cmdlnx'"
 else
   echo
   echo "Zero Kelvin Linux mode"
   echo
   boxnme="-name zroklnx"
-  qaccel="-accel tcg"
-  qaccel+=" -M microvm,x-option-roms=off,pit=off,pic=off,rtc=off,acpi=off"
-  qaccel+=" -icount shift=0,sleep=off,align=off -nodefaults -serial mon:stdio"
+  cmdlnx="$cmdlnx deferred_probe_timeout=0 page_alloc.shuffle=0 memtest=0"
+  set -x
+  $qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic \
+      -no-reboot -boot order=dc ${boxnme:-} -append "$cmdlnx" \
+          -nodefaults -serial mon:stdio -accel tcg
+  set +x
+  exit 0
 fi
+
+cmdlnx="-append '$cmdlnx'"
 
 cmd="$qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
     -boot order=dc ${boxnme:-} ${qaccel:-} ${netisl:-} ${cmdlnx:-} ${QARGS:-}"
 
-sh -xc "$cmd"; stty sane; printf '\e[?7h'
+# Starting the QEMU configuraed virtual machine ################################
 
-# dmesg | uchaos -i 16 -d 3 -qT 4 -r 31 -k /dev/random >/dev/null
+sh -xc "$cmd"; stty sane; printf '\e[?7h'
+echo $cmd
+
+# QZERO=1 QMSZE=2144M sh start.sh "" bzImage.515x
+
+# dmesg | uchaos -S -M 16 | RNG_test-musl-static stdin64
 
 # for i in $(seq 1 $((32*8))); do dmesg | uchaos -i 16 -d 3 -r 31 -qM 128;
 #   echo $i; done | RNG_test-musl-static stdin64 | tee -a test.log
@@ -116,8 +125,7 @@ sh -xc "$cmd"; stty sane; printf '\e[?7h'
 if false; then
 qemu-system-x86_64 \
   -append "console=ttyS0 root=/dev/vda acpi=off" \
-  -drive file=rootfs.img,format=raw,id=hd0,if=none
-  -device virtio-blk-device,drive=hd0 \
-
+  -drive file=rootfs.img,format=raw,id=hd0,if=none \
+  -device virtio-blk-device,drive=hd0
 fi
 

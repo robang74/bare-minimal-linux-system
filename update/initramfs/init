@@ -66,7 +66,7 @@ acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
   echo | uchaos.gz.sh -Sk /dev/random | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
-  if which uchaos; then
+  if which uchaos >&3 && uchaos -v 2>&1| grep -q v0.2.8; then
     entrq=$(cat /proc/sys/kernel/random/entropy_avail)
     printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
     echo

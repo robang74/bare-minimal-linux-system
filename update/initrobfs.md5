@@ -1,6 +1,7 @@
-886149b1eac771b4cc4bf88af5414ab5  initrobfs.cpio.gz.new
+18d5d1855f78fc4986910a008ed59dde  initrobfs.cpio.gz.new
+ff5110571661417e128f695de751efb6  update/common/etc/profile
 0d79822f1e74df2427cca58272437c16  update/common/usr/bin/uchaos.upx
-ea7aa6c18235d0cea9eb43c1ca50a5e2  update/common/usr/bin/uchaos.gz.sh
+79678b623d80addb207654a6683a12a4  update/common/usr/bin/uchaos.gz.sh
 525f77ae65c09c564ed4c1b89422262c  update/initrobfs/etc/os-release
 f855c53e29bb243aa3cc310bb95e33d6  update/initrobfs/etc/resolv.conf
 014c112cd990ffb792ad7861d2604f2d  update/initrobfs/init

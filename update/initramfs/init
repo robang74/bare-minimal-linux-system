@@ -59,14 +59,33 @@ export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 
 echo; uname -a | sed -e "s,x86_64 x86_64 x86_64,x86_64,"
 
+exec 3>/dev/null
+
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
-if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >/dev/null; then
-  echo | uchaos.gz.sh -Sk /dev/random | md5sum
-fi 2>&1 | grep . | sed -e "s,  -$, --> /dev/random by uChaos,"
-entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
-
+if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
+  echo | uchaos.gz.sh -Sk /dev/random | md5sum 2>&1 | grep . |\
+    sed -e "s,  -$, --> /dev/random by uChaos,"
+  if which uchaos; then
+    entrq=$(cat /proc/sys/kernel/random/entropy_avail)
+    printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+    echo
+    echo "DEVEL TEST START"
+    echo "Generating randomness by $(uchaos -v 2>&1)"
+    dmesg > d.txt
+    n=0
+    let n++
+    for n in $(seq 2); do
+      for i in $(seq 128); do
+        uchaos -qS -M1 < d.txt | dd bs=1k count=4 iflag=fullblock 2>&3;
+      done >d.ata.$n
+    cat d.ata.$n | RNG_test-musl-static stdin64 -tlshow  512K 2>&3
+    done
+    cat d.ata.*  | RNG_test-musl-static stdin64 -tlshow 1024K 2>&3
+  fi
+else
+  printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
+fi
 echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64

@@ -92,13 +92,17 @@ else
   echo "Zero Kelvin Linux mode"
   echo
   boxnme="-name zroklnx"
+# qaccel+=" -M microvm,x-option-roms=off,pit=off,pic=off,rtc=off,acpi=off"
+# qaccel+=" -icount shift=0,sleep=off,align=off
+
   cmdlnx="$cmdlnx deferred_probe_timeout=0 page_alloc.shuffle=0 memtest=0"
-  set -x
+  cmdlnx="lpj=2000000 noapic nolapic clocksource=pit video=off nomodeset $cmdlnx"
+
   $qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic \
       -no-reboot -boot order=dc ${boxnme:-} -append "$cmdlnx" \
-          -nodefaults -serial mon:stdio -accel tcg
-  set +x
-  exit 0
+          -nodefaults -serial mon:stdio -accel tcg -icount shift=0 \
+          -vga none -display none
+  exit $?
 fi
 
 cmdlnx="-append '$cmdlnx'"

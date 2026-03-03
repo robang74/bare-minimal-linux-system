@@ -79,9 +79,9 @@ if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
       for i in $(seq 128); do
         uchaos -qS -M1 < d.txt | dd bs=1k count=4 iflag=fullblock 2>&3;
       done >d.ata.$n
-    cat d.ata.$n | RNG_test-musl-static stdin64 -tlshow  512K 2>&3
+    cat d.ata.$n | RNG_test-musl-static stdin64 -tlshow  512K
     done
-    cat d.ata.*  | RNG_test-musl-static stdin64 -tlshow 1024K 2>&3
+    cat d.ata.*  | RNG_test-musl-static stdin64 -tlshow 1024K
   fi
 else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp

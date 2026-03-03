@@ -13,7 +13,7 @@ update=0
 tstimg=0
 
 if [ "x${1:-}" = "x-z" ]; then
-  export QZERO=1
+  export QZERO=1 QMSZE=2144M
   shift
 fi
 
@@ -53,9 +53,9 @@ fi
 rfsdir=$(echo "$rfsimg" | sed 's/\.cpio\.gz//;s/\.cpio//')
 chkmd5() { md5sum -c update/$rfsdir.md5 2>/dev/null; }
 
-if [ $docpio -ne 0 -a -d update/$rfsdir/ ]; then
+if [ -d update/$rfsdir/ ]; then
   printf "Checking is ramfs update "
-  if ! chkmd5; then
+  if chkmd5 && [ $docpio -ne 0 ]; then
     sh cpio.sh -e $rfsimg $tmpdir 2>&1 | grep -E "cpio: | blocks"
     cp -arf -pd update/common/* update/$rfsdir/* $tmpdir/ 2>&1
     sh cpio.sh -c $rfsimg.new $tmpdir 2>&1

@@ -4,7 +4,7 @@ alias ll='ls -al'
 alias qq='reboot -f'
 export PS1='\u@\h:\w\$ '
 
-rngtest() { /usr/bin/RNG_test-musl-static stdin64; }
+rngtest() { /usr/bin/RNG_test-musl-static stdin64 "$@"; }
 
 urnd_warm_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
@@ -18,4 +18,15 @@ urnd_cold_test() {
   dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
       time -p uchaos -S -M $m $@ < dmesg.txt > data.$i; done
   cat data.? | rngtest
+}
+
+urnd_w16k_test() {
+  dmesg -r | head -c 8192 >dmesg.txt
+  time -p uchaos -S $@ < dmesg.txt | rngtest -tlshow  16K
+}
+
+urnd_c16k_test() {
+  dmesg -r | head -c 8192 >dmesg.txt
+  time -p uchaos -S $@ < dmesg.txt > data.p2
+  cat data.p2 | rngtest -tlshow  16K
 }

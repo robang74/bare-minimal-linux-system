@@ -55,7 +55,7 @@ chkmd5() { md5sum -c update/$rfsdir.md5 2>/dev/null; }
 
 if [ -d update/$rfsdir/ ]; then
   printf "Checking is ramfs update "
-  if chkmd5 && [ $docpio -ne 0 ]; then
+  if ! chkmd5 || [ $docpio -ne 0 ]; then
     sh cpio.sh -e $rfsimg $tmpdir 2>&1 | grep -E "cpio: | blocks"
     cp -arf -pd update/common/* update/$rfsdir/* $tmpdir/ 2>&1
     sh cpio.sh -c $rfsimg.new $tmpdir 2>&1

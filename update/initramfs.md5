@@ -1,8 +1,8 @@
-f64115a3b6b7cf8983944cead2fc1bd5  initramfs.cpio.gz.new
-46fbcb9d2986b6b39c91cff1132b546f  update/common/etc/profile
+f0c3ed0ad031b563ee5bd724299ea847  initramfs.cpio.gz.new
+d303224aa096fbb7872f7b4079186914  update/common/etc/profile
 0d79822f1e74df2427cca58272437c16  update/common/usr/bin/uchaos.upx
-79678b623d80addb207654a6683a12a4  update/common/usr/bin/uchaos.gz.sh
+2fc963d05cac53b1e1bdf96003e67168  update/common/usr/bin/uchaos.gz.sh
 
 
 0267867e0db7102f21ae1dcdb622619e  update/initramfs/etc/inittab
-d5159158869c07a25e1519e7a3aad031  update/initramfs/init
+e30a08fbf903613ae0045ecf2732d1c3  update/initramfs/init

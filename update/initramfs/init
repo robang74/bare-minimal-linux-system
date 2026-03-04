@@ -66,13 +66,13 @@ acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
   echo | uchaos.gz.sh -Sk /dev/random | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
-  if which uchaos >&3 && uchaos -v 2>&1| grep -qe "v0.2.[89]"; then
-    entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-    printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+  entrq=$(cat /proc/sys/kernel/random/entropy_avail)
+  printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+  if which uchaos >&3 && grep -q "UCTEST=1" /proc/cmdline; then
     echo
     echo "DEVEL TEST START"
     echo "Generating randomness by $(uchaos -v 2>&1)"
-    dmesg > d.txt
+    dmesg -r | head -c 8192 >dmesg.txt
     n=0
     let n++
     for n in $(seq 8); do

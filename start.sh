@@ -12,8 +12,10 @@ docpio=1
 update=0
 tstimg=0
 
+cmdlnx=
 if [ "x${1:-}" = "x-z" ]; then
   export QZERO=1 QMSZE=2144M
+  cmdlnx="UCTEST=${UCTEST:-0}"
   shift
 fi
 
@@ -29,6 +31,18 @@ fi
 if [ "x${1:-}" = "x-T" ]; then
   docpio=0
   shift;
+elif [ "x${1:-}" = "x-U" ]; then
+  {
+    echo | sh $0 -t; echo | sh $0 -t -r
+    echo | sh $0 -u; echo | sh $0 -u -r
+  } >/dev/null
+  echo
+  for f in update/initr*md5; do
+    sed -e "s/.*uchaos$//" -e "s/.*RNG_.*static$//" -i $f
+    echo "$f:"; cat $f | grep .
+    echo
+  done
+  exit
 fi
 
 if [ "x${1:-}" = "x-r" ]; then
@@ -81,7 +95,7 @@ test $tstimg -eq 0 || exit
 
 export QTTYUC=${QTTYUC:-console=ttyS0,115200n8}
 
-cmdlnx="HOST=x86_64 root=/dev/ram0 init=/init $QTTYUC net.ifnames=0 nokaslr"
+cmdlnx="$cmdlnx HOST=x86_64 root=/dev/ram0 init=/init $QTTYUC net.ifnames=0 nokaslr"
 
 if [ "${QZERO:-0}" = "0" ]; then
   boxnme="-name tinylnx"

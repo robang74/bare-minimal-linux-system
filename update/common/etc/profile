@@ -8,14 +8,14 @@ rngtest() { /usr/bin/RNG_test-musl-static stdin64; }
 
 urnd_warm_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
-  dmesg | head -c 8192 >dmesg.txt; for i in $(seq $n); do
+  dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
       time -p uchaos -S -M $m $@ < dmesg.txt;
   done  | dd bs=1M status=none | rngtest
 }
 
 urnd_cold_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
-  dmesg | head -c 8192 >dmesg.txt; for i in $(seq $n); do
+  dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
       time -p uchaos -S -M $m $@ < dmesg.txt > data.$i; done
   cat data.? | rngtest
 }

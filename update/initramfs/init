@@ -72,7 +72,7 @@ if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
     echo
     echo "DEVEL TEST START"
     echo "Generating randomness by $(uchaos -v 2>&1)"
-    dmesg -r | head -c 8192 >dmesg.txt
+    dmesg -r | head -c 8192 > d.txt
     n=0
     let n++
     for n in $(seq 8); do

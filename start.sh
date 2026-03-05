@@ -17,6 +17,10 @@ if [ "x${1:-}" = "x-z" ]; then
   export QZERO=1 QMSZE=2144M
   cmdlnx="UCTEST=${UCTEST:-0}"
   shift
+elif [ "x${1:-}" = "x-Z" ]; then
+  export QZERO=1 QMSZE=2144M
+  cmdlnx="UCTEST=${UCTEST:-1}"
+  shift
 fi
 
 if [ "x${1:-}" = "x-t" ]; then

@@ -1,8 +1,9 @@
-f0c3ed0ad031b563ee5bd724299ea847  initramfs.cpio.gz.new
-d303224aa096fbb7872f7b4079186914  update/common/etc/profile
+f7abdc22d7852c68a7f7ec4d3b173ab3  initramfs.cpio.gz.new
+e89c23bbf3884285baf93987375eccce  update/common/etc/uctests
+feff0aced566cf20edca09042267a3df  update/common/etc/profile
+25a456bf8f77dc1c26dfbf9aa8c5d132  update/common/usr/bin/RNG_test.gz.sh
 0d79822f1e74df2427cca58272437c16  update/common/usr/bin/uchaos.upx
-2fc963d05cac53b1e1bdf96003e67168  update/common/usr/bin/uchaos.gz.sh
-
+904529a63e9606854c80fef00622c9c6  update/common/usr/bin/uchaos.gz.sh
 
 0267867e0db7102f21ae1dcdb622619e  update/initramfs/etc/inittab
-e30a08fbf903613ae0045ecf2732d1c3  update/initramfs/init
+6b894912868e00869ab22093d12b83e0  update/initramfs/init

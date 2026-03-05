@@ -4,10 +4,7 @@ alias ll='ls -al'
 alias qq='reboot -f'
 export PS1='\u@\h:\w\$ '
 
-rngtest() { /usr/bin/RNG_test-musl-static stdin64 "$@"; }
-
-test ! -x /bin/uchaos -a -x /bin/uchaos.gz.sh &&
-  alias uchaos="uchaos.gz.sh"
+rngtest() { /usr/bin/RNG_test stdin64 "$@"; }
 
 urnd_warm_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;

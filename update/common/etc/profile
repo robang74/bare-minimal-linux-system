@@ -6,6 +6,9 @@ export PS1='\u@\h:\w\$ '
 
 rngtest() { /usr/bin/RNG_test-musl-static stdin64 "$@"; }
 
+test ! -x /bin/uchaos -a -x /bin/uchaos.gz.sh &&
+  alias uchaos="uchaos.gz.sh"
+
 urnd_warm_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
   dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
@@ -16,17 +19,17 @@ urnd_warm_test() {
 urnd_cold_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
   dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
-      time -p uchaos -S -M $m $@ < dmesg.txt > data.$i; done
+      time -p uchaos -S -d7 -M $m $@ < dmesg.txt > data.$i; done
   cat data.? | rngtest
 }
 
 urnd_w16k_test() {
   dmesg -r | head -c 8192 >dmesg.txt
-  time -p uchaos -S $@ < dmesg.txt | rngtest -tlshow  16K
+  time -p uchaos -S ${@:--M4} < dmesg.txt | rngtest -tlshow 16K
 }
 
 urnd_c16k_test() {
   dmesg -r | head -c 8192 >dmesg.txt
-  time -p uchaos -S $@ < dmesg.txt > data.p2
-  cat data.p2 | rngtest -tlshow  16K
+  time -p uchaos -S ${@:--M4} < dmesg.txt > data.p2
+  cat data.p2 | rngtest -tlshow 16K
 }

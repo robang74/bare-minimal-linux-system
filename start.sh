@@ -111,11 +111,13 @@ else
 
   cmdlnx="$cmdlnx deferred_probe_timeout=0 page_alloc.shuffle=0 memtest=0"
   cmdlnx="lpj=2000000 noapic nolapic clocksource=pit video=off nomodeset $cmdlnx"
+  cmdlnx="$cmdlnx random.trust_cpu=off"
 
-  $qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic \
-      -no-reboot -boot order=dc ${boxnme:-} -append "$cmdlnx" \
-          -nodefaults -serial mon:stdio -accel tcg -icount shift=0 \
-          -vga none -display none
+  $qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic     \
+           -no-reboot -boot order=dc ${boxnme:-} -append "$cmdlnx ${KARGS:-}" \
+           -nodefaults -serial mon:stdio -vga none -display none -net none    \
+           -accel tcg -cpu qemu64 -smp 1 -icount shift=0,sleep=off,align=off  \
+           -rtc base=2026-03-01,clock=vm
   exit $?
 fi
 

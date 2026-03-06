@@ -10,7 +10,7 @@ if which uchaos >&3 && grep -q "UCTEST=1" /proc/cmdline; then
   echo "DEVEL TEST START"
   echo
   echo "Preliminary speed and stats check"
-  echo; uchaos -K512 < d.txt >/dev/null
+  echo; uchaos -SK128 < d.txt >/dev/null
   printf "Generating randomness by $(uchaos -v 2>&1)\n\\_ Chunks: "
   for n in $(seq 1 8); do uchaos -qqZ -M1 < d.txt >$n.dat;
     printf "$n "; done

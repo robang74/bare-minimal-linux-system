@@ -42,7 +42,7 @@ elif [ "x${1:-}" = "x-U" ]; then
   } >/dev/null
   echo
   for f in update/initr*md5; do
-    sed -e "s/.*uchaos$//" -e "s/.*RNG_.*static$//" -i $f
+    sed -e "s/.*uchaos.gz.sh$//" -e "s/.*RNG_.*static$//" -i $f
     echo "$f:"; cat $f | grep .
     echo
   done

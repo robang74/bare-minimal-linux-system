@@ -57,12 +57,12 @@ bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
-echo; uname -a | sed -e "s,x86_64 x86_64 x86_64,x86_64,"l
+echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 if uname -r | grep -qe "^5.15.201$" && which uchaos.gz.sh >&3; then
-  echo | uchaos.gz.sh -Sk /dev/random | md5sum 2>&1 | grep . |\
+  echo | uchaos.gz.sh -qSk /dev/random | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
   printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq

@@ -9,14 +9,14 @@ rngtest() { /usr/bin/RNG_test stdin64 "$@"; }
 urnd_warm_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
   dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
-      time -p uchaos -S -M $m $@ < dmesg.txt;
+      time -p uchaos -qS -M $m $@ < dmesg.txt;
   done  | dd bs=1M status=none | rngtest
 }
 
 urnd_cold_test() {
   n=${1:-4}; shift; m=${1:-128}; shift;
   dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
-      time -p uchaos -S -d7 -M $m $@ < dmesg.txt > data.$i; done
+      time -p uchaos -qS -d7 -M $m $@ < dmesg.txt > data.$i; done
   cat data.? | rngtest
 }
 
@@ -27,6 +27,6 @@ urnd_w16k_test() {
 
 urnd_c16k_test() {
   dmesg -r | head -c 8192 >dmesg.txt
-  time -p uchaos -S ${@:--M4} < dmesg.txt > data.p2
+  time -p uchaos -Z ${@:--M4} < dmesg.txt > data.p2
   cat data.p2 | rngtest -tlshow 16K
 }

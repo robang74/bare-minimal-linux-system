@@ -11,10 +11,10 @@ if which uchaos >&3 && grep -q "UCTEST=1" /proc/cmdline; then
   echo
   echo "Preliminary speed and stats check"
   echo; uchaos -K512 < d.txt >/dev/null
-  echo "Generating randomness by $(uchaos -v 2>&1)"
-  n=0
-  let n++; printf "Chunks: "
-  for n in $(seq 8); do uchaos -qS -M1 < d.txt >$n.dat; printf "$n "; done
+  printf "Generating randomness by $(uchaos -v 2>&1)\n\\_ Chunks: "
+  for n in $(seq 1 8); do uchaos -qqZ -M1 < d.txt >$n.dat;
+    printf "$n "; done
+  n=x2; printf "$n ... "; uchaos -qqS -M8 < d.txt >$n.dat
   printf "\n\n"
   cat *.dat | RNG_test stdin64 -tlshow 1024K
   printf "Files: "; ls -1 *.dat | tr '\t\n' '  '; echo

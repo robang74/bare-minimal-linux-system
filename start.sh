@@ -18,7 +18,7 @@ if [ "x${1:-}" = "x-z" ]; then
   cmdlnx="UCTEST=${UCTEST:-0}"
   shift
 elif [ "x${1:-}" = "x-Z" ]; then
-  export QZERO=1 QMSZE=2144M
+  export QZERO=1 QMSZE=2144M UCTEST=1
   cmdlnx="UCTEST=${UCTEST:-1}"
   shift
 fi
@@ -55,9 +55,13 @@ if [ "x${1:-}" = "x-r" ]; then
 else
   rfsimg="${1:-initramfs.cpio}"
 fi
-
 test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
-kimg="${2:-bzImage}"
+
+if [ "$UCTEST" = "1" -a "${2:-}" = "" ]; then
+  kimg="bzImage.515x"
+else
+  kimg="${2:-bzImage}"
+fi
 tmpdir=${3:-}
 
 if [ ! -n "$tmpdir" ]; then

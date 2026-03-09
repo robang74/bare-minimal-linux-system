@@ -14,11 +14,11 @@ tstimg=0
 
 cmdlnx=
 if [ "x${1:-}" = "x-z" ]; then
-  export QZERO=1 QMSZE=2144M
+  export QZERO=1 QMSZE=256M
   cmdlnx="UCTEST=${UCTEST:-0}"
   shift
 elif [ "x${1:-}" = "x-Z" ]; then
-  export QZERO=1 QMSZE=2144M UCTEST=1
+  export QZERO=1 QMSZE=256M UCTEST=1
   cmdlnx="UCTEST=${UCTEST:-1}"
   shift
 fi

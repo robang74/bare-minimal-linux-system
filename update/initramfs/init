@@ -54,7 +54,6 @@ mkdir -p $tmpdir/ && chmod +t $tmpdir
 # enviroment config
 exec 3>/dev/nul
 
-bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
@@ -84,11 +83,11 @@ if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
   modinfo lib/modules/uchaos_dev.ko
   echo
   insmod lib/modules/uchaos_dev.ko && dmesg > /dev/uchaos
-  dd if=/dev/uchaos bs=1k count=64 of=/dev/null 2>&1 | grep copied
-  dd if=/dev/uchaos bs=8  count=8k status=none | RNG_test.gz.sh stdin64 -tlshow 64K
-  #dd if=/dev/uchaos bs=1k count=64 | RNG_test.gz.sh stdin64 -tlshow 64K
+  dd if=/dev/uchaos bs=1k count=1 of=/dev/null 2>&1 | grep copied
+  dd if=/dev/uchaos bs=1k count=8k status=none | RNG_test.gz.sh stdin64 -tlshow 8M
 fi
 
+bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
 echo -ne "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64

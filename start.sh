@@ -21,6 +21,8 @@ elif [ "x${1:-}" = "x-Z" ]; then
   export QZERO=1 QMSZE=256M UCTEST=1
   cmdlnx="UCTEST=${UCTEST:-1}"
   shift
+else
+  test -n "$UCTEST" && cmdlnx="UCTEST=$UCTEST"
 fi
 
 if [ "x${1:-}" = "x-t" ]; then

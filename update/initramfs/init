@@ -1,6 +1,7 @@
 #!/bin/sh
+#
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
-
+#
 export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 
 # busybox install
@@ -59,9 +60,17 @@ home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 
+krnver=$(uname -r)
+mkdir -p /lib/modules; ln -sf /lib/modules /lib/modules/$krnver
+
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
-if uname -r | grep -qe "^5.15.201$" && which uchaos >&3; then
+if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
+  echo "Load and testing uchaos_dev.ko ... "
+  insmod lib/modules/uchaos_dev.ko && dmesg > /dev/uchaos
+  for i in $(seq 1024); do cat /dev/uchaos; done | RNG_test.gz.sh stdin64 -tlshow 8K
+  #dd if=/dev/uchaos bs=1k count=64 | RNG_test.gz.sh stdin64 -tlshow 64K
+elif echo $krnver | grep -qe "^5.15.201$" && which uchaos >&3; then
   echo | uchaos -qZk /dev/random | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)

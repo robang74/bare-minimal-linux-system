@@ -94,11 +94,11 @@ rgt() {
 if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
 echo
 grep -qe "UCTEST=2" /proc/cmdline && {
-  dd if=/dev/uchaos bs=1k count=16k of=/dev/null 2>&1 | grep copied; echo
-  dd if=/dev/uchaos bs=1k count=16k status=none | rgt
+  dd if=/dev/uchaos bs=8k count=2k of=/dev/null 2>&1 | grep copied; echo
+  dd if=/dev/uchaos bs=8k count=2k status=none | rgt
 }
 grep -qe "UCTEST=3" /proc/cmdline && {
-  dd if=/dev/uchaos bs=1k count=16k of=/d.ata 2>&1 | grep copied; echo
+  dd if=/dev/uchaos bs=8k count=2k of=/d.ata 2>&1 | grep copied; echo
   rgt </d.ata
 }
 fi

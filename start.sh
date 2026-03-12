@@ -125,7 +125,7 @@ else
   netisl="-net none -serial mon:stdio -nodefaults"
   
   if [ "${ZWARM:-0}" = "1" ]; then
-    qaccel="";
+    qaccel="-cpu qemu64 -smp 1";
   fi
 fi
 

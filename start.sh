@@ -104,6 +104,7 @@ test $tstimg -eq 0 || exit
 export QTTYUC=${QTTYUC:-console=ttyS0,115200n8}
 
 cmdlnx="$cmdlnx HOST=x86_64 root=/dev/ram0 init=/init $QTTYUC net.ifnames=0 nokaslr"
+nograp="-nographic -vga none -display none"
 
 if [ "${QZERO:-0}" = "0" ]; then
   boxnme="-name tinylnx"
@@ -114,30 +115,23 @@ else
   echo "Zero Kelvin Linux mode"
   echo
   boxnme="-name zroklnx"
-# qaccel+=" -M microvm,x-option-roms=off,pit=off,pic=off,rtc=off,acpi=off"
-# qaccel+=" -icount shift=0,sleep=off,align=off
-
+  qaccel="-accel tcg -cpu qemu64 -smp 1 -icount shift=0,sleep=off,align=off"
+  qaccel="$qaccel -rtc base=2026-03-01,clock=vm,driftfix=none"
   cmdlnx="$cmdlnx deferred_probe_timeout=0 page_alloc.shuffle=0 memtest=0"
   cmdlnx="lpj=2000000 noapic nolapic clocksource=pit video=off nomodeset $cmdlnx"
   cmdlnx="$cmdlnx random.trust_cpu=off mitigations=off"
+  netisl="-net none -serial mon:stdio -nodefaults"
   
   if [ "${QWARM:-0}" = "0" ]; then
-    true;
-  else
-    cldstr="-accel tcg -cpu qemu64 -smp 1 -icount shift=0,sleep=off,align=off"
-    cldstr="$cldstr -rtc base=2026-03-01,clock=vm,driftfix=none"
+    qaccel="";
   fi
-  $qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic     \
-           -no-reboot -boot order=dc ${boxnme:-} -append "$cmdlnx ${KARGS:-}" \
-           -nodefaults -serial mon:stdio -vga none -display none -net none $cldstr
-
-  exit $?
 fi
 
-cmdlnx="-append '$cmdlnx'"
+cmdlnx="-append '$cmdlnx ${KARGS:-}'"
 
-cmd="$qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} -nographic -no-reboot \
-    -boot order=dc ${boxnme:-} ${qaccel:-} ${netisl:-} ${cmdlnx:-} ${QARGS:-}"
+cmd="$qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} ${nograp:-} \
+              -no-reboot -boot order=dc ${boxnme:-} ${qaccel:-} ${netisl:-} \
+              ${cmdlnx:-} ${QARGS:-}"
 
 # Starting the QEMU configuraed virtual machine ################################
 

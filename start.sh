@@ -14,8 +14,8 @@ tstimg=0
 
 cmdlnx=
 if [ "x${1:-}" = "x-z" ]; then
-  export QZERO=1 QMSZE=256M
-  cmdlnx="UCTEST=${UCTEST:-0}"
+  export QZERO=1 QMSZE=256M UCTEST=${UCTEST:-0}
+  cmdlnx="UCTEST=$UCTEST"
   shift
 elif [ "x${1:-}" = "x-Z" ]; then
   export QZERO=1 QMSZE=256M UCTEST=1
@@ -57,7 +57,7 @@ else
 fi
 test -r ${rfsimg}.gz && rfsimg="${rfsimg}.gz"
 
-if [ "$UCTEST" = "1" -a "${2:-}" = "" ]; then
+if [ -n "$UCTEST" -a "${2:-}" = "" ]; then
   kimg="bzImage.515x"
 else
   kimg="${2:-bzImage}"
@@ -122,7 +122,7 @@ else
   cmdlnx="$cmdlnx random.trust_cpu=off mitigations=off"
   netisl="-net none -serial mon:stdio -nodefaults"
   
-  if [ "${QWARM:-0}" = "0" ]; then
+  if [ "${ZWARM:-0}" = "1" ]; then
     qaccel="";
   fi
 fi

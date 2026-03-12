@@ -65,8 +65,16 @@ mkdir -p /lib/modules; ln -sf /lib/modules /lib/modules/$krnver
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 
+dmesg -r | head -c 8192 > d.txt
+if test -r /lib/modules/uchaos_dev.ko; then
+  echo
+  echo "Load and testing uchaos_dev.ko ... "
+  modinfo /lib/modules/uchaos_dev.ko
+  insmod /lib/modules/uchaos_dev.ko && cat d.txt > /dev/uchaos
+fi
+
 if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
-  dmesg -r | uchaos -qZK1 -k /dev/random | md5sum 2>&1 | grep . |\
+  uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
   printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
@@ -76,15 +84,16 @@ else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi
 
-grep -qe "UCTEST=2" /proc/cmdline && \
 if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
-  echo
-  echo "Load and testing uchaos_dev.ko ... "
-  modinfo lib/modules/uchaos_dev.ko
-  echo
-  insmod lib/modules/uchaos_dev.ko && dmesg > /dev/uchaos
-  dd if=/dev/uchaos bs=1k count=1 of=/dev/null 2>&1 | grep copied
+echo
+grep -qe "UCTEST=2" /proc/cmdline && {
+  dd if=/dev/uchaos bs=1k count=8k of=/dev/null 2>&1 | grep copied; echo
   dd if=/dev/uchaos bs=1k count=8k status=none | RNG_test.gz.sh stdin64 -tlshow 8M
+}
+grep -qe "UCTEST=3" /proc/cmdline && {
+  dd if=/dev/uchaos bs=1k count=16k of=/d.ata 2>&1 | grep copied; echo
+  RNG_test.gz.sh stdin64 -tlshow 16M </d.ata
+}
 fi
 
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)

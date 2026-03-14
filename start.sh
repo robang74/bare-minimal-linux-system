@@ -72,6 +72,9 @@ if [ ! -n "$tmpdir" ]; then
   rm -rf $tmpdir
 fi
 
+# PractRand requires a quite large memory buffer to allocate
+test "$kimg" = "bzImage.515x" && QMSZE=${QMSZE:-512M}
+
 # Updating the image before start it
 
 rfsdir=$(echo "$rfsimg" | sed 's/\.cpio\.gz//;s/\.cpio//')
@@ -123,7 +126,7 @@ else
   cmdlnx="lpj=2000000 noapic nolapic clocksource=pit video=off nomodeset $cmdlnx"
   cmdlnx="$cmdlnx random.trust_cpu=off mitigations=off"
   netisl="-net none -serial mon:stdio -nodefaults"
-  
+
   if [ "${ZWARM:-0}" = "1" ]; then
     qaccel="-cpu qemu64 -smp 1";
   fi

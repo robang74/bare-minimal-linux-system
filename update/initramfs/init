@@ -17,8 +17,9 @@ fi
 mount -t proc procfs /proc
 mount -t sysfs sysfs /sys
 mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
-mkdir -p dev/pts && mount -t devpts devpts dev/pts;
+mkdir -p dev/pts && mount -t devpts devpts dev/pts
 
+insmod   /lib/modules/uchaos_dev.ko badb_init=1
 echo 3 > /proc/sys/kernel/printk
 echo Y > /sys/module/printk/parameters/time
 grep -E "MemAvailable:|MemTotal:" /proc/meminfo
@@ -61,7 +62,6 @@ echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 
 krnver=$(uname -r)
 mkdir -p /lib/modules; ln -sf /lib/modules /lib/modules/$krnver
-
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 HLINE=$(printf '-%.0s' $(seq 80))
@@ -69,6 +69,7 @@ HLINE=$(printf '-%.0s' $(seq 80))
 dmesg -r | head -c 8192 > d.txt
 
 if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
+  test "$entrp" != "256" &&
   uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
@@ -84,23 +85,36 @@ if test -r /lib/modules/uchaos_dev.ko; then
   echo "Load, init with 8-zeros and test the /dev/uchaos"
   printf "$HLINE\n\n"
   modinfo /lib/modules/uchaos_dev.ko
-  insmod /lib/modules/uchaos_dev.ko && #cat d.txt > /dev/uchaos
-    dd if=/dev/zero bs=8 count=1 of=/dev/uchaos status=none
+# insmod /lib/modules/uchaos_dev.ko && #cat d.txt > /dev/uchaos
+#     dd if=/dev/zero bs=8 count=1 of=/dev/uchaos status=none
 fi
 rgt() {
   RNG_test.gz.sh stdin64 -tlshow 16M "$@" 2>&1|\
-  sed -e "s,error reading from file,$HLINE,"; 
+  sed -e "s,error reading from file,$HLINE,";
 }
 if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
-echo
-grep -qe "UCTEST=2" /proc/cmdline && {
-  dd if=/dev/uchaos bs=8k count=2k of=/dev/null 2>&1 | grep copied; echo
-  dd if=/dev/uchaos bs=8k count=2k status=none | rgt
-}
-grep -qe "UCTEST=3" /proc/cmdline && {
-  dd if=/dev/uchaos bs=8k count=2k of=/d.ata 2>&1 | grep copied; echo
-  rgt </d.ata
-}
+  grep -qe "UCTEST=2" /proc/cmdline && {
+    echo
+    echo "UCTEST=3: testing /dev/uchaos in warm I/O reading test"
+    dd if=/dev/uchaos bs=8k count=2k of=/dev/null 2>&1 | grep copied; echo
+    dd if=/dev/uchaos bs=8k count=2k status=none | rgt
+  }
+  grep -qe "UCTEST=3" /proc/cmdline && {
+    echo
+    echo "UCTEST=3: testing /dev/uchaos in cold RAM reading test"
+    dd if=/dev/uchaos bs=8k count=2k of=/d.ata 2>&1 | grep copied; echo
+    rgt </d.ata
+  }
+  if test -r /lib/modules/uchaos_dev.ko; then
+    grep -qe "UCTEST=4" /proc/cmdline && {
+      echo
+      echo "UCTEST=4: testing uchaos_dev.ko seeded /dev/random "
+      entrp=$(cat /proc/sys/kernel/random/entropy_avail)
+      dd if=/dev/random bs=8k status=none | rgt;
+      entrq=$(cat /proc/sys/kernel/random/entropy_avail)
+      printf "Kernel entropy pool available: %d --> %d\n" $entrp $entrq
+    }
+  fi
 fi
 
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)

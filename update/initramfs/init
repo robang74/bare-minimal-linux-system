@@ -68,6 +68,13 @@ HLINE=$(printf '-%.0s' $(seq 80))
 
 dmesg -r | head -c 8192 > d.txt
 
+if test -r /lib/modules/uchaos_dev.ko; then
+  echo
+  echo "Load, init with 8-zeros and test the /dev/uchaos"
+  printf "$HLINE\n\n"
+  modinfo /lib/modules/uchaos_dev.ko
+fi
+
 if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
   test "$entrp" != "256" &&
   uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
@@ -80,18 +87,11 @@ else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi
 
-if test -r /lib/modules/uchaos_dev.ko; then
-  echo
-  echo "Load, init with 8-zeros and test the /dev/uchaos"
-  printf "$HLINE\n\n"
-  modinfo /lib/modules/uchaos_dev.ko
-# insmod /lib/modules/uchaos_dev.ko && #cat d.txt > /dev/uchaos
-#     dd if=/dev/zero bs=8 count=1 of=/dev/uchaos status=none
-fi
 rgt() {
   RNG_test.gz.sh stdin64 -tlshow 16M "$@" 2>&1|\
   sed -e "s,error reading from file,$HLINE,";
 }
+
 if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
   grep -qe "UCTEST=2" /proc/cmdline && {
     echo

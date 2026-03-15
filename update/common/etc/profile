@@ -3,30 +3,24 @@
 alias ll='ls -al'
 alias qq='reboot -f'
 export PS1='\u@\h:\w\$ '
+export KVERS=$(uname -r)
 
 rngtest() { /usr/bin/RNG_test stdin64 "$@"; }
 
-urnd_warm_test() {
-  n=${1:-4}; shift; m=${1:-128}; shift;
-  dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
-      time -p uchaos -qS -M $m $@ < dmesg.txt;
-  done  | dd bs=1M status=none | rngtest
+mod_load() {
+  test -n "${1:-}" || return 1
+  kmod=${1:-.};
+  if lsmod | grep "$kmod"; then rmmod $kmod && sleep 0.1; fi
+  modrpath="/lib/modules/$KVERS/$kmod"
+  test -r $modrpath.ko && modrpath="$modrpath.ko"
+  test -r $modrpath.ko.gz && modrpath="$modrpath.ko.gz"
+  command insmod $modrpath "$@";
 }
 
-urnd_cold_test() {
-  n=${1:-4}; shift; m=${1:-128}; shift;
-  dmesg -r | head -c 8192 >dmesg.txt; for i in $(seq $n); do
-      time -p uchaos -qS -d7 -M $m $@ < dmesg.txt > data.$i; done
-  cat data.? | rngtest
-}
-
-urnd_w16k_test() {
-  dmesg -r | head -c 8192 >dmesg.txt
-  time -p uchaos -S ${@:--M4} < dmesg.txt | rngtest -tlshow 16K
-}
-
-urnd_c16k_test() {
-  dmesg -r | head -c 8192 >dmesg.txt
-  time -p uchaos -Z ${@:--M4} < dmesg.txt > data.p2
-  cat data.p2 | rngtest -tlshow 16K
+mod_info() {
+  test -n "${1:-}" || return 1
+  modrpath="/lib/modules/$KVERS/$1"
+  test -r $modrpath.ko && modrpath="$modrpath.ko"
+  test -r $modrpath.ko.gz && modrpath="$modrpath.ko.gz"
+  command modinfo $modrpath
 }

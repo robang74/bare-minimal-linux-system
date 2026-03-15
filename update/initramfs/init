@@ -82,39 +82,9 @@ if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
   printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
   dmesg | grep "random: crng init done" || echo "random: crng still crying"
-  grep -qe "UCTEST=1" /proc/cmdline && source /etc/uctests
+  grep -qe "UCTEST=" /proc/cmdline && source /etc/uctests
 else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
-fi
-
-rgt() {
-  RNG_test.gz.sh stdin64 -tlshow 16M "$@" 2>&1|\
-  sed -e "s,error reading from file,$HLINE,";
-}
-
-if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
-  grep -qe "UCTEST=2" /proc/cmdline && {
-    echo
-    echo "UCTEST=3: testing /dev/uchaos in warm I/O reading test"
-    dd if=/dev/uchaos bs=8k count=2k of=/dev/null 2>&1 | grep copied; echo
-    dd if=/dev/uchaos bs=8k count=2k status=none | rgt
-  }
-  grep -qe "UCTEST=3" /proc/cmdline && {
-    echo
-    echo "UCTEST=3: testing /dev/uchaos in cold RAM reading test"
-    dd if=/dev/uchaos bs=8k count=2k of=/d.ata 2>&1 | grep copied; echo
-    rgt </d.ata
-  }
-  if test -r /lib/modules/uchaos_dev.ko; then
-    grep -qe "UCTEST=4" /proc/cmdline && {
-      echo
-      echo "UCTEST=4: testing uchaos_dev.ko seeded /dev/random "
-      entrp=$(cat /proc/sys/kernel/random/entropy_avail)
-      dd if=/dev/random bs=8k status=none | rgt;
-      entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-      printf "Kernel entropy pool available: %d --> %d\n" $entrp $entrq
-    }
-  fi
 fi
 
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)

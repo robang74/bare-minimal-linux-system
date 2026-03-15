@@ -70,7 +70,7 @@ dmesg -r | head -c 8192 > d.txt
 
 if test -r /lib/modules/uchaos_dev.ko; then
   echo
-  echo "Load, init with 8-zeros and test the /dev/uchaos"
+  echo "Module creates /dev/uchaos which can be initialised with 8-zeros"
   printf "$HLINE\n\n"
   modinfo /lib/modules/uchaos_dev.ko
 fi
@@ -80,9 +80,9 @@ if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
   uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-  printf "Active console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+  printf "\nActive console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
   dmesg | grep "random: crng init done" || echo "random: crng still crying"
-  grep -qe "UCTEST=" /proc/cmdline && source /etc/uctests
+  grep -qe "UCTEST=" /proc/cmdline && sh /etc/uctests
 else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi

@@ -34,23 +34,29 @@ _dduchaos() { dd if=/dev/uchaos bs=8k "$@"; }
 _pgetentr() { cat /proc/sys/kernel/random/entropy_avail; }
 
 if echo $krnver | grep -qe "^5.15.202$" && which RNG_test.gz.sh >&3; then
+  printf "\n>>>>>>>>: Kernel entropy pool available: %d bits\n" $(_pgetentr)
   grep -qe "UCTEST=2" /proc/cmdline && {
-    printf "\nUCTEST=3: testing /dev/uchaos in warm I/O reading test\n\n"
+    printf "UCTEST=3: testing /dev/uchaos in warm I/O reading test\n\n"
     _dduchaos count=2k of=/dev/null 2>&1 | grep copied; echo
     _dduchaos count=2k status=none | _rngtest
   }
   grep -qe "UCTEST=3" /proc/cmdline && {
-    printf "\nUCTEST=3: testing /dev/uchaos in cold RAM reading test\n\n"
+    printf "UCTEST=3: testing /dev/uchaos in cold RAM reading test\n\n"
     _dduchaos count=2k of=/d.ata 2>&1 | grep copied; echo
     _rngtest </d.ata
   }
   if test -r /lib/modules/uchaos_dev.ko; then
     grep -qe "UCTEST=4" /proc/cmdline && {
-      printf "\nUCTEST=4: endless 'uchaos_dev.ko crng init' test, wait ...\n\n"
-      entrp=$(_pgetentr)
+      printf "UCTEST=4: endless 'uchaos_dev.ko crng init' test, wait ...\n\n"
       _dduchaos status=none | _rngtest;
-      entrq=$(_pgetentr)
-      printf "Kernel entropy pool available: %d --> %d\n" $entrp $entrq
+    }
+    grep -qe "UCTEST=5" /proc/cmdline && {
+      printf "UCTEST=5: endless '/dev/random' uchaos crng init' test, wait ...\n\n"
+      dd if=/dev/random bs=8k status=none | _rngtest;
+    }
+    grep -qe "UCTEST=6" /proc/cmdline && {
+      printf "UCTEST=6: endless '/dev/urandom' uchaos crng init' test, wait ...\n\n"
+      dd if=/dev/urandom bs=8k status=none | _rngtest;
     }
   fi
 fi

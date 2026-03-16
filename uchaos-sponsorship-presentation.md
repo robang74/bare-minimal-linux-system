@@ -1,4 +1,4 @@
-## uChaos: Technical Proposal Seeking Commercial Sponsorship
+## uChaos: Technical Proposal for Commercial Sponsorship
 
 The `uchaos.c`, `uchaoseederd.c` and `uchaos_dev.c` are a set of C-language coded solutions (MVP) among which the last one is a kernel device driver that recently developed within a month timeframe in which I did my own research about randomness.
 
@@ -18,7 +18,9 @@ Under the perspective from the points above listed, virtio-rng is free entropy o
 
 Networks geographically fragmentation / separation is a common best practice but did not solve the trust issue when infrastructure ownership, administration and hardware collocation did not match the same Gov agenda.
 
-#### How does uChaos fit in a Trust Sovereignty by Vendor/HW Agnostic Security strategy?
+#### Trust Sovereignty for Security Strategy
+
+How does uChaos fit into a trust sovereignty by vendor/HW agnostic security strategy?
 
 - uchaos novelty is being designed with physics-first rather than engineering-first mindset
 - uchaos is Linux crng orthogonal and independent, a self-sufficient randomness source that can be also integrated in /dev/*random

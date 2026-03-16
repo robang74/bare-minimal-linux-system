@@ -10,13 +10,15 @@ The comments are also half of the interesting part in terms of presentation. So,
 - randomness and entropy are two separate concepts which have been not deeply understood (physics, rather than math)
 - modern distributed infrastructure virtualise almost everything because scalability on-demand and load balancing
 - instead CPU and RAM are usually the two hardware which are universally provided by passthrough to VMs
-- the above two points are mainly related to performances because huge numbers/volume requires efficiency
+- the above two points are mainly related to performances because huge numbers / volume requires efficiency
 - the IoT and swarm meshes are another story but the same: cpu is universal, while hrng is not
 - modern times includes geopolitical uncertainty and mass-surveillance by Gov agencies
 
-Under the perspective from the points above listed, virtio-rng is free entropy only in a fully trustable environment and distributed infrastructure aren't by definition because they are geographically displaced in many countries which Govs do not share the same interest or way of resolving conflicts. Networks geographically fragmentation / separation is a common best practice but did not solve the trust issue when infrastructure ownership, administration and hardware collocation did not match the same Gov agenda.
+Under the perspective from the points above listed, virtio-rng is free entropy only in a fully trustable environment and distributed infrastructure aren't by definition because they are geographically displaced in many countries which Govs do not share the same interest or way of resolving conflicts.
 
-#### How can uChaos fit into a Trust Sovereignty by Hardware/Vendor Agnostic Security strategy?
+Networks geographically fragmentation / separation is a common best practice but did not solve the trust issue when infrastructure ownership, administration and hardware collocation did not match the same Gov agenda.
+
+#### How does uChaos fit in a Trust Sovereignty by Vendor/HW Agnostic Security strategy?
 
 - uchaos novelty is being designed with physics-first rather than engineering-first mindset
 - uchaos is Linux crng orthogonal and independent, a self-sufficient randomness source that can be also integrated in /dev/*random
@@ -25,8 +27,8 @@ Under the perspective from the points above listed, virtio-rng is free entropy o
 - uchaos is available as out-of-the-three module and can replace integrally and frictionless the linux crng / virtio-rng
 - uchaos is available in userland without even the need of root privilege and can be embedded into an application
 - uchaos provide (AFAIK) a throughput 2/3 compared the /dev/random, the same randomness quality
-- uchaos does not rely on cryptographic functions nor a secret seed (*), it is transparent and inspectable
-- uchaos is not a product but a minimum-viable-product (MVP) and it is ready for testing using this link (repo)
+- uchaos does not rely on cryptographic functions nor a secret seed, it is transparent and inspectable
+- uchaos is not a product but a minimum-viable-product (MVP) and it is ready for testing using this repository link:
 
 ~> https://github.com/robang74/bare-minimal-linux-system
 

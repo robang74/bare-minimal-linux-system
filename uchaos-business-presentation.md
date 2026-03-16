@@ -35,7 +35,11 @@ How can uchaos fit into a Trust Sovereignty by Hardware/Vendor Agnostic Security
 which executes:
 
 ```sh
-qemu-system-x86_64 -m 2G -kernel bzImage.515x -initrd initramfs.cpio.gz.new -nographic -vga none -display none -no-reboot -boot order=dc -name tinylnx -enable-kvm -cpu host -machine accel=kvm -netdev user,id=net0,restrict=yes -device virtio-net-pci,netdev=net0 -append 'UCTEST=4 HOST=x86_64 root=/dev/ram0 init=/init console=ttyS0,115200n8 net.ifnames=0 nokaslr '
+qemu-system-x86_64 -m 2G -kernel bzImage.515x -initrd initramfs.cpio.gz.new \
+-nographic -vga none -display none -no-reboot -boot order=dc -name tinylnx  \
+-enable-kvm -cpu host -machine accel=kvm -netdev user,id=net0,restrict=yes  \
+-device virtio-net-pci,netdev=net0 -append 'UCTEST=4 HOST=x86_64 nokaslr    \
+root=/dev/ram0 init=/init console=ttyS0,115200n8 net.ifnames=0'
 ```
 
 The one above (the nearest to the real-world use case in distributed infrastructures) and all the other configurations included into the start.sh have been tested against PractRand stdin64 and passed tests also 128GB long while testing on terabyte scale and certification are left to those needs them for their own sake or provided to those commercial sponsors interested in.

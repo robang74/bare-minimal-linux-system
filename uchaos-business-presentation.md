@@ -1,4 +1,4 @@
-## uCHAOS COMMERCIAL / BUSINESS PRESENTATION
+## uChaos: Technical Proposal Seeking Commercial Sponsorship
 
 The `uchaos.c`, `uchaoseederd.c` and `uchaos_dev.c` are a set of C-language coded solutions (MVP) among which the last one is a kernel device driver that recently developed within a month timeframe in which I did my own research about randomness.
 
@@ -27,7 +27,7 @@ Networks geographically fragmentation / separation is a common best practice but
 - uchaos is available as out-of-the-three module and can replace integrally and frictionless the linux crng / virtio-rng
 - uchaos is available in userland without even the need of root privilege and can be embedded into an application
 - uchaos provide (AFAIK) a throughput 2/3 compared the /dev/random, the same randomness quality
-- uchaos does not rely on cryptographic functions nor a secret seed, it is transparent and inspectable
+- uchaos does not need to rely on cryptographic functions nor a secret seed, it is transparent and inspectable
 - uchaos is not a product but a minimum-viable-product (MVP) and it is ready for testing using this repository link:
 
 ~> https://github.com/robang74/bare-minimal-linux-system
@@ -44,7 +44,7 @@ qemu-system-x86_64 -m 2G -kernel bzImage.515x -initrd initramfs.cpio.gz.new \
 root=/dev/ram0 init=/init console=ttyS0,115200n8 net.ifnames=0'
 ```
 
-The one above (the nearest to the real-world use case in distributed infrastructures) and all the other configurations included into the start.sh have been tested against `PractRand stdin64` and passed tests also 128GB long while testing on terabyte scale and certification are left to those needs them for their own sake or provided to those commercial sponsors interested in.
+The one above (the nearest to the real-world use case in distributed infrastructures) and all the other configurations included into the start.sh have been tested against `PractRand stdin64` and passed tests also 128GB long while testing on terabyte scale, risks auditing and certifications are left to those needs them for their own sake or provided to those commercial sponsors interested in.
 
 In uchaos description list, self-sufficient refers to any real or virtual machine in which the CPU or the KVM passthrough leaks entropy directly or indirectly by scheduler jittering, In a totally deterministic machine the output is totally predictable and its security relies only on the secrecy of the seeding. In absolute zero entropy special case, uchaos behaviour, requirements and vulnerability fallback to the Linux crng model.
 

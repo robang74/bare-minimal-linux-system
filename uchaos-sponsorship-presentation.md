@@ -32,7 +32,7 @@ How does uChaos fit into a trust sovereignty by vendor/HW agnostic security stra
 - uchaos does not need to rely on cryptographic functions nor a secret seed, it is transparent and inspectable
 - uchaos is not a product but a minimum-viable-product (MVP) and it is ready for testing using this repository link:
 
-~> https://github.com/robang74/bare-minimal-linux-system
+~> https://github.com/robang74/bare-minimal-linux-system  (replicates MIT case study, 2015)
 
 - `UCTEST=4 QMSZE=2G QZERO=0 ZWARM=0 sh start.sh "" bzImage.515x`
 

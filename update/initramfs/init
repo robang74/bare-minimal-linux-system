@@ -15,85 +15,21 @@ fi
 # system uprising
 
 mount -t proc procfs /proc
+echo 3 > /proc/sys/kernel/printk
+
 mount -t sysfs sysfs /sys
+echo Y > /sys/module/printk/parameters/time
+
 mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
 mkdir -p dev/pts && mount -t devpts devpts dev/pts
 
-insmod   /lib/modules/uchaos_dev.ko badb_init=1
-echo 3 > /proc/sys/kernel/printk
-echo Y > /sys/module/printk/parameters/time
-grep -E "MemAvailable:|MemTotal:" /proc/meminfo
+export bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
+printf "\e[?7hRun /init exec /linuxrc\n\n"
 
-# caching filesystems
-
-( find / >/dev/null 2>&1 & sleep 0.01 )
-
-# temporary folder
-
-tmpdir="/dev/shm"
-mkdir -p $tmpdir/ && chmod +t $tmpdir
-if grep -qw tmpfs /proc/filesystems; then
-  ramsize=$(sed -ne "s/MemAvailable: *\([0-9]\+\) kB/\\1/p" /proc/meminfo)
-  shmsize="65536"; [ $ramsize -le 131072 ] && shmsize=$(( ramsize >> 2 ))
-  tmpdev=/dev/zram0;
-  sb=/sys/block/zram0
-  if [ -e $sb/reset ]; then
-    echo 1 > $sb/reset
-    echo ${shmsize}k > $sb/disksize
-    zsize=$(( $(cat $sb/disksize) >> 10 ))
-    shmsize=
-  else
-    tmpdev=tmpfs
-  fi
-  mount -o nosuid,nodev,${shmsize:+size=${shmsize}k} -t tmpfs $tmpdev $tmpdir
-  if grep -q " $tmpdir " /proc/mounts; then
-    echo "Temporary $tmpdir size is ${shmsize:-$zsize} kB of ${zsize:+Z}RAM"
-  fi
-fi
-mkdir -p $tmpdir/ && chmod +t $tmpdir
-
-# enviroment config
-exec 3>/dev/nul
-
-home=$(ls -1d /home /root / 2>/dev/null | tail -n1)
-
-export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
-echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
-
-krnver=$(uname -r)
-mkdir -p /lib/modules; ln -sf /lib/modules /lib/modules/$krnver
-entrp=$(cat /proc/sys/kernel/random/entropy_avail)
-acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
-HLINE=$(printf '-%.0s' $(seq 80))
-
-dmesg -r | head -c 8192 > d.txt
-
-if test -r /lib/modules/uchaos_dev.ko; then
-  echo
-  echo "Module creates /dev/uchaos which can be initialised with 8-zeros"
-  printf "$HLINE\n\n"
-  modinfo /lib/modules/uchaos_dev.ko
-fi
-
-if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
-  test "$entrp" != "256" &&
-  uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
-    sed -e "s,  -$, --> /dev/random by uChaos,"
-  entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-  printf "\nActive console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
-  dmesg | grep "random: crng init done" || echo "random: crng still crying"
-  grep -qe "UCTEST=" /proc/cmdline && sh /etc/uctests
-else
-  printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
-fi
-
-bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c4)
-echo -ne "\e[?7h
-      ===============================================
-      Welcome to Minimal Linux System for QEMU x86_64
-       System dmsg time was ${bttm}s at the 1st console
-      ===============================================
-       type command 'reboot -f' to shutdown this VM
-\n"
 stty -echoctl
 exec /linuxrc
+
+echo
+echo "Emergency shell respowning because /linuxrc failed"
+echo
+while true; do /bin/sh; sleep 1; done

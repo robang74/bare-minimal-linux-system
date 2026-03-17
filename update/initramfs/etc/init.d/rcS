@@ -59,11 +59,12 @@ fi
 # check VM absolute 0°K 
 if grep "WRINIT" -q /proc/cmdline; then
   if which uchaosbox >&3; then
-    for i in $(seq 1); do
-      H1="uchaosbox prnt16 -n96"
-      H2="uchaosbox mixtrd -tn16 '$H1' | uchaosbox uchaos -qqr7 -d3 -i1"
-      H3=$(uchaosbox mixtrd -tn6 "$H2" | md5sum | cut -d' ' -f1)
+    for i in $(seq 2); do
+      H1="uchaosbox prnt16 -n96" #; read -t 0.001 < /dev/$acnsl"
+      H2="uchaosbox mixtrd -tn16 '$H1' | md5sum" # uchaosbox uchaos -qqr7 -d3 -i1"
+      H3="$H3 "$(uchaosbox mixtrd -tn6 "$H2")
     done
+    H3=$(echo "$H3" | md5sum | cut -d: -f1)
   #for i in $(seq 999999); do [ -n "$H3" ] && break; usleep 1; done
   printf "kdevseed:       at 0.%09s, hash: 0x${H3:-(none)}\n" $(date +%N)
   echo "$H3" >/dev/uchaos 2>&3

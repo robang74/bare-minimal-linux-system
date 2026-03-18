@@ -1,7 +1,7 @@
-401846037fae3b6ebd97bc92be63768e  initrobfs.cpio.gz.new
+698651fe6e4ece87d4df2b25ca6f473b  initrobfs.cpio.gz.new
 0670f928708835e0193c9899e8f9ebfc  update/common/etc/uctests
-3a90a093437c12ac7fc0aab1d06dc650  update/common/etc/profile
-de0e15661dc50af5b65e40cbebde9ed7  update/common/lib/modules/uchaos_dev.ko
+879fea50af76b3707e3360e3b4bd4d8d  update/common/etc/profile
+bd647a3f18a42baecb333866ea921fb6  update/common/lib/modules/uchaos_dev.ko
 8ca94fa824ae942a238af409359f6e74  update/common/usr/sbin/uchaoseederd.gz.sh
 25a456bf8f77dc1c26dfbf9aa8c5d132  update/common/usr/bin/RNG_test.gz.sh
 07c6acd119dad62e61edc5fec6ada6c2  update/common/usr/bin/gzcmd.gz.sh

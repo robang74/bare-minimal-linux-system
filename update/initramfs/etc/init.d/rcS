@@ -4,10 +4,17 @@
 #
 export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 
+insmod /lib/modules/uchaos_dev.ko badb_init=1
+{
+  while usleep 9999; do dmesg | grep -q "uchaos: kmod loop=" && break; done
+  echo 3 >/proc/sys/kernel/printk
+} &
+
 exec 3>/dev/nul
 
-insmod /lib/modules/uchaos_dev.ko badb_init=1
-echo 0 > /proc/sys/kernel/random/urandom_min_reseed_secs
+krnver=$(uname -r)
+mkdir -p /lib/modules;
+ln -sf /lib/modules /lib/modules/$krnver
 
 # temporary folder
 
@@ -43,10 +50,6 @@ home=$(ls -1d /home /root / 2>&3 | tail -n1)
 
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
 
-krnver=$(uname -r)
-mkdir -p /lib/modules;
-ln -sf /lib/modules /lib/modules/$krnver
-
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
 HLINE=$(printf '-%.0s' $(seq 80))
@@ -72,8 +75,6 @@ if grep "WRINIT" -q /proc/cmdline; then
     echo ">>>>> Check for isolated VM: hashes and timings repeatibility across reboots"
   fi
 fi
-
-echo 3 > /proc/sys/kernel/printk
 
 dmesg -r | head -c 8192 > d.txt
 echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"

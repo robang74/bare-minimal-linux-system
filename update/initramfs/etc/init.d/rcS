@@ -7,6 +7,7 @@ export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 exec 3>/dev/nul
 
 insmod /lib/modules/uchaos_dev.ko badb_init=1
+echo 0 > /proc/sys/kernel/random/urandom_min_reseed_secs
 
 # temporary folder
 
@@ -72,26 +73,31 @@ if grep "WRINIT" -q /proc/cmdline; then
   fi
 fi
 
+echo 3 > /proc/sys/kernel/printk
+
 dmesg -r | head -c 8192 > d.txt
 echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
   test "$entrp" != "256" &&
   uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
+  pools=$(cat /proc/sys/kernel/random/poolsize)
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
-  printf "\nActive console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
+  printf "\nActive console: %s, entropy: %d -> %d / %d bits\n" \
+      $acnsl $entrp $entrq $pools
   dmesg | grep "random: crng init done"
   grep -qe "UCTEST=" /proc/cmdline && sh /etc/uctests
 else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi
 
-tm=${bttm:+${bttm}s}
-echo -ne "\e[?7h
+bnst=$(cut -d' ' -f1 /proc/uptime)
+printf "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
-       Boot time ${tm} at /init, ??? at 1st console
+      Boot time %.02fs at /init, %.03fs at 1st console
+      Boot UUID: $(cat /proc/sys/kernel/random/boot_id)
       ===============================================
        type command 'reboot -f' to shutdown this VM
-\n"
-stty -echoctl
+\n" $bttm $bnst
+

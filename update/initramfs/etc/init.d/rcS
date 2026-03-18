@@ -41,10 +41,10 @@ mkdir -p $tmpdir/ && chmod +t $tmpdir
 home=$(ls -1d /home /root / 2>&3 | tail -n1)
 
 export HOME=$home TMPDIR=$tmpdir GZTMPDIR=/tmp GZUNGZIP=/bin/zcat
-echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 
 krnver=$(uname -r)
-mkdir -p /lib/modules; ln -sf /lib/modules /lib/modules/$krnver
+mkdir -p /lib/modules;
+ln -sf /lib/modules /lib/modules/$krnver
 
 entrp=$(cat /proc/sys/kernel/random/entropy_avail)
 acnsl=$(sed '$s@.*[ /]@@' /sys/class/tty/console/active)
@@ -56,30 +56,31 @@ if test -r /lib/modules/uchaos_dev.ko; then
   printf "$HLINE\n\n"
   modinfo /lib/modules/uchaos_dev.ko
 fi
-# check VM absolute 0°K 
 if grep "WRINIT" -q /proc/cmdline; then
   if which uchaosbox >&3; then
+    printf "hashing...\n"
     for i in $(seq 2); do
       H1="uchaosbox prnt16 -n96" #; read -t 0.001 < /dev/$acnsl"
       H2="uchaosbox mixtrd -tn16 '$H1' | md5sum" # uchaosbox uchaos -qqr7 -d3 -i1"
       H3="$H3 "$(uchaosbox mixtrd -tn6 "$H2")
     done
-    H3=$(echo "$H3" | md5sum | cut -d: -f1)
-  #for i in $(seq 999999); do [ -n "$H3" ] && break; usleep 1; done
-  printf "kdevseed:       at 0.%09s, hash: 0x${H3:-(none)}\n" $(date +%N)
-  echo "$H3" >/dev/uchaos 2>&3
+    H3=$(echo "$H3" | md5sum | cut -d' ' -f1)
+    printf "kdevseed:       at 0.%09s, hash: 0x${H3:-(none)}\n" $(date +%N)
+    echo "$H3" >/dev/uchaos 2>&3
+    echo
+    echo ">>>>> Check for isolated VM: hashes and timings repeatibility across reboots"
   fi
 fi
 
 dmesg -r | head -c 8192 > d.txt
-
+echo; uname -a | sed -e "s,\(x86_64\) x86_64 x86_64,\\1,"
 if echo $krnver | grep -qe "^5.15.20[0-9]$" && which uchaos >&3; then
   test "$entrp" != "256" &&
   uchaos -qZK1 -k /dev/random < d.txt | md5sum 2>&1 | grep . |\
     sed -e "s,  -$, --> /dev/random by uChaos,"
   entrq=$(cat /proc/sys/kernel/random/entropy_avail)
   printf "\nActive console: %s, entropy: %d -> %d bits\n" $acnsl $entrp $entrq
-# dmesg | grep "random: crng init done" || echo "random: crng still crying"
+  dmesg | grep "random: crng init done"
   grep -qe "UCTEST=" /proc/cmdline && sh /etc/uctests
 else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp

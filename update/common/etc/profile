@@ -1,4 +1,11 @@
 #!/bin/env
+#
+# (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
+#
+
+export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
+
+exec 3>/dev/nul
 
 alias ll='ls -al'
 alias qq='reboot -f'

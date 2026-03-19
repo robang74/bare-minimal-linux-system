@@ -13,25 +13,24 @@ export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 
 /bin/busybox --install
 
-# uchaos_dev load
-
-mount -t proc procfs /proc
-if [ -f /proc/modules ]; then
-  insmod /lib/modules/uchaos_dev.ko badb_init=1 || true
-  while usleep 9999; do dmesg | grep -q "uchaos: kmod loop=" && break; done
-fi
-echo 3 >/proc/sys/kernel/printk
-
 # system uprising
 
 mount -t sysfs sysfs /sys
-mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
-mkdir -p dev/pts && mount -t devpts devpts dev/pts
+echo Y > /sys/module/printk/parameters/time
+insmod /lib/modules/uchaos_dev.ko badb_init=1 2>&1 | grep -q .
 
-# 2nd stage switch
+mount -t proc procfs /proc
+grep -q uchaos_dev /proc/modules &&
+  while usleep 9999; do dmesg | grep -q "uchaos: kmod loop=" && break; done
+echo 3 >/proc/sys/kernel/printk
+
+mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
+mkdir -p /dev/pts && mount -t devpts devpts /dev/pts
+
+# 2nd stage init
 
 printf "\e[?7hRun /init exec /linuxrc\n"
-echo Y > /sys/module/printk/parameters/time
+
 chmod +x /etc/init.d/rcS
 touch /etc/fstab
 exec /linuxrc

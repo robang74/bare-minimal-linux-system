@@ -4,12 +4,6 @@
 #
 export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 
-insmod /lib/modules/uchaos_dev.ko badb_init=1
-{
-  while usleep 9999; do dmesg | grep -q "uchaos: kmod loop=" && break; done
-  echo 3 >/proc/sys/kernel/printk
-} &
-
 exec 3>/dev/nul
 
 krnver=$(uname -r)
@@ -92,7 +86,8 @@ else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi
 
-bnst=$(cut -d' ' -f1 /proc/uptime)
+bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c8)
+bnst=$(dmesg | tail -n 1 | sed -e 's/^\[//' -e 's/\].*//')
 printf "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64

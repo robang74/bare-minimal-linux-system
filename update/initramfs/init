@@ -2,19 +2,25 @@
 #
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
 #
-export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
+
+# uchaos_dev load
+
+/bin/busybox insmod /lib/modules/uchaos_dev.ko badb_init=1
 
 # busybox install
 
-if [ -x /bin/busybox ]; then
-  /bin/busybox --install
-  chmod +x /etc/init.d/rcS
-  touch /etc/fstab
-fi
+export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
+
+/bin/busybox --install
+
+# uchaos_dev wait
+
+while usleep 9999; do dmesg | grep -q "uchaos: kmod loop=" && break; done
 
 # system uprising
 
 mount -t proc procfs /proc
+echo 3 >/proc/sys/kernel/printk
 mount -t sysfs sysfs /sys
 echo Y > /sys/module/printk/parameters/time
 mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
@@ -22,9 +28,9 @@ mkdir -p dev/pts && mount -t devpts devpts dev/pts
 
 # 2nd stage switch
 
-bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c8)
 printf "\e[?7hRun /init exec /linuxrc\n"
-export bttm
+chmod +x /etc/init.d/rcS
+touch /etc/fstab
 exec /linuxrc
 stty -echoctl
 echo

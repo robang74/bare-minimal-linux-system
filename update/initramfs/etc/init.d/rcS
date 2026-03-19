@@ -86,12 +86,12 @@ else
   printf "Active console: %s, entropy: %d bits\n" $acnsl $entrp
 fi
 
+bnst=$(printf "0.%09d" $(( $(date +%s%N) - bttm )))
 bttm=$(dmesg | sed -ne "s,\[ *\([0-9.]*\)*\] Run /init .*,\\1,p" | head -c8)
-bnst=$(dmesg | tail -n 1 | sed -e 's/^\[//' -e 's/\].*//')
 printf "\e[?7h
       ===============================================
       Welcome to Minimal Linux System for QEMU x86_64
-      Boot time %.02fs at /init, %.03fs at 1st console
+      Boot time %.03fs at /init + %.03fs at usr shell
       Boot UUID: $(cat /proc/sys/kernel/random/boot_id)
       ===============================================
        type command 'reboot -f' to shutdown this VM

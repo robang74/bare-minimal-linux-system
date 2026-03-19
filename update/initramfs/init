@@ -3,6 +3,10 @@
 # (c) 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, MIT license
 #
 
+# Run /init time
+
+export bttm=$(/bin/busybox date +%s%N)
+
 # busybox install
 
 export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
@@ -21,14 +25,13 @@ echo 3 >/proc/sys/kernel/printk
 # system uprising
 
 mount -t sysfs sysfs /sys
-echo Y > /sys/module/printk/parameters/time
-
 mount -o size=16k,nosuid -t devtmpfs tmpfs /dev
 mkdir -p dev/pts && mount -t devpts devpts dev/pts
 
 # 2nd stage switch
 
 printf "\e[?7hRun /init exec /linuxrc\n"
+echo Y > /sys/module/printk/parameters/time
 chmod +x /etc/init.d/rcS
 touch /etc/fstab
 exec /linuxrc

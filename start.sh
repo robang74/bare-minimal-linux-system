@@ -63,9 +63,14 @@ if [ -n "$UCTEST" -a "${2:-}" = "" ]; then
   kimg="bzImage.515x"
 else
   kimg="${2:-bzImage}"
+  
 fi
-tmpdir=${3:-}
 
+if [ "$kimg" != "bzImage.515x" ]; then
+  KARGS="quiet ${KARGS:-}"
+fi
+
+tmpdir=${3:-}
 if [ ! -n "$tmpdir" ]; then
   tmpdir="cpio.tmp/"
   trap "rm -rf $tmpdir; return 1" EXIT INT TERM

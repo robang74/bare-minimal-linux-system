@@ -143,23 +143,3 @@ cmd="$qemubin -m ${QMSZE:-128M} -kernel ${kimg} -initrd ${rfsimg} ${nograp:-} \
 sh -xc "$cmd"; stty sane; printf '\e[?7h'
 echo $cmd
 
-# QZERO=1 QMSZE=2144M sh start.sh "" bzImage.515x
-
-# dmesg | uchaos -S -M 16 | RNG_test-musl-static stdin64
-
-# dmesg | uchaos -S -M 256 > data.01 ; cat data.01 | RNG_test-musl-static stdin64
-
-# for i in $(seq 1 $((32*8))); do dmesg | uchaos -i 16 -d 3 -r 31 -qM 128;
-#   echo $i; done | RNG_test-musl-static stdin64 | tee -a test.log
-
-# dmesg | head -c 8192 > dmesg.txt
-# for i in $(seq 1 32); do echo $i; uchaos -i 16 -d 3 -r 31 -qM 16 < dmesg.txt;
-#  done > test.dat; RNG_test-musl-static stdin64 < test.dat | tee -a test.log
-
-if false; then
-qemu-system-x86_64 \
-  -append "console=ttyS0 root=/dev/vda acpi=off" \
-  -drive file=rootfs.img,format=raw,id=hd0,if=none \
-  -device virtio-blk-device,drive=hd0
-fi
-

@@ -17,7 +17,8 @@ export TERM=xterm PATH=/bin:/sbin:/usr/bin:/usr/sbin ENV=/etc/profile
 
 mount -t sysfs sysfs /sys
 echo Y > /sys/module/printk/parameters/time
-insmod /lib/modules/uchaos_dev.ko badb_init=1 2>&1 | grep -q .
+test -r /lib/modules/uchaos_dev.ko &&
+  insmod /lib/modules/uchaos_dev.ko badb_init=1
 
 mount -t proc procfs /proc
 grep -q uchaos_dev /proc/modules &&

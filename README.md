@@ -1,14 +1,15 @@
 # Bare Minimal Linux Kernel & RootFS
 
-#### Support this project and in particular the [gzcmd.sh](gzcmd.sh) development donating [here](https://github.com/sponsors/robang74).
+`(c)` 2026, Roberto A. Foglietta <roberto.foglietta@gmail.com>, text published under CC BY-NC-ND 4.0
 
----
+- &nbsp;Click on the button to know how to &nbsp;[![Sponsor me](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff69b4?style=flat&logo=github)](https://github.com/sponsors/robang74)&nbsp; this project and get in touch with me.
 
 > [!NOTE]
 > 
-> Compared to the original project from which this repo has been forked the changes
-> in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
-> has been added to facilitate the use for those clone or download the zip file.
+> this project has been developed further for [uChaoSys](https://github.com/robang74/uchaosys) evolving in an embedded system<br>
+> with a **footprint below 2MB**, musl all-static and it completes the **boot in less than 1/10s**
+
+---
 
 ### Main components
 
@@ -19,6 +20,12 @@
 - **ToyBox** 0.8.13 &nbsp; (as a lighter alternative, downloaded from mkroot project)
 
 - **gzcmd.sh** v0.1.5 &nbsp; (as a PoC of a KISS self-extracting ELF compressor)
+
+> [!NOTE]
+> 
+> Compared to the original project from which this repo has been forked the changes
+> in initramfs.cpio are in `update` folder, and the `README.md`. While `start.sh`
+> has been added to facilitate the use for those clone or download the zip file.
 
 ---
 

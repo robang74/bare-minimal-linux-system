@@ -19,7 +19,7 @@
 
 - **ToyBox** 0.8.13 &nbsp; (as a lighter alternative, downloaded from mkroot project)
 
-- **gzcmd.sh** v0.1.5 &nbsp; (as a PoC of a KISS self-extracting ELF compressor)
+- **gzcmd.sh** v0.1.7 &nbsp; (as a PoC of a KISS self-extracting ELF compressor)
 
 > [!NOTE]
 > 

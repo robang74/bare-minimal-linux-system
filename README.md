@@ -8,6 +8,8 @@
 > 
 > this project has been developed further for [uChaoSys](https://github.com/robang74/uchaosys) evolving in an embedded system<br>
 > with a **footprint below 2MB**, musl all-static and it completes the **boot in less than 1/10s**
+>
+> The `gzcmd.sh` got its own github repository [here](https://github.com/robang74/gzcmd.sh), for futher developments as utility.
 
 ---
 
